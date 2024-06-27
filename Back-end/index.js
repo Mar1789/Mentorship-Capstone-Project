@@ -30,6 +30,16 @@ app.get("/posts", authenticate, async (req, res) => {
   res.json(posts);
 });
 
+app.get("/user", authenticate, async (req, res) => {
+    const userId = res.locals.id;
+    const user = await prisma.User.findFirst({
+        where: {
+            id: userId
+        }
+    })
+    res.json(user);
+})
+
 app.post("/register", async (req, res) => {
   // Create new accounts
   let { username, password, accountType } = req.body;
