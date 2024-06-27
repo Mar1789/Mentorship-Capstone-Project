@@ -21,7 +21,6 @@ const Member = () => {
       },
     }).then((data) =>
       data.json().then((data) => {
-        console.log(data);
         if (data === "Invalid Token") {
           window.location.href = "/";
         } else {
@@ -39,7 +38,6 @@ const Member = () => {
       body: JSON.stringify({ username: username, password: password }),
     }).then((data) =>
       data.json().then((data) => {
-        console.log(data);
         if (data.accessToken) {
           localStorage.setItem("accessToken", data.accessToken);
           localStorage.setItem("refreshToken", data.refreshToken);
@@ -50,7 +48,6 @@ const Member = () => {
     );
   }
   Member();
-  console.log(user);
   return (
     <>
       <Navbar expand="lg" className="bg-body-tertiary" fixed="top">
