@@ -17,7 +17,7 @@ app.listen(PORT, () => {
   console.log(`Server is Running: ${PORT}`);
 });
 
-app.get("/posts", authenticate, async (req, res) => {
+app.get("/posts", async (req, res) => {
   // Gets posts made by user
   const userId = res.locals.id;
   const posts = await prisma.posts.findMany({
@@ -30,7 +30,7 @@ app.get("/posts", authenticate, async (req, res) => {
   res.json(posts);
 });
 
-app.get("/user", authenticate, async (req, res) => {
+app.get("/user", async (req, res) => {
   const userId = res.locals.id;
   const user = await prisma.User.findFirst({
     where: {
@@ -72,18 +72,3 @@ app.post("/register", async (req, res) => {
     });
   }
 });
-
-function authenticate(req, res, next) {
-  const header = req.headers["authorization"];
-  const token = header && header.split(" ")[1];
-  if (token === null) {
-    res.json("Token in Bearer required");
-  }
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) {
-      res.json("Invalid Token");
-    }
-    res.locals.id = user.id;
-    next();
-  });
-}

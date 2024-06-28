@@ -28,11 +28,11 @@ app.post("/token", async (req, res) => {
     },
   });
   if (count === 0) {
-    res.sendStatus("INVALID TOKEN");
+    res.json(count);
   } else {
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
       if (err) {
-        res.sendStatus("INVALID");
+        res.json("INVALID");
       } else {
         const accessToken = GenerateAccessToken({
           name: user.name,
@@ -42,6 +42,21 @@ app.post("/token", async (req, res) => {
       }
     });
   }
+});
+
+app.get("/auth", async (req, res) => {
+  const header = req.headers["authorization"];
+  const token = header && header.split(" ")[1];
+  if (token === null) {
+    res.json("Token in Bearer required");
+  }
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) {
+      res.json("Invalid Token");
+    } else {
+        res.json(user);
+    }
+  });
 });
 
 app.delete("/logout", authenticate, async (req, res) => {
@@ -117,7 +132,7 @@ app.post("/login", async (req, res) => {
 
 function GenerateAccessToken(userprofile) {
   return jwt.sign(userprofile, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "5s",
   });
 }
 
