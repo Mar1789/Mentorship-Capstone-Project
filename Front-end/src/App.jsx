@@ -1,7 +1,16 @@
+<<<<<<< Updated upstream
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+=======
+import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Home from "./Home";
+import Member from "./Member";
+>>>>>>> Stashed changes
 
 function App() {
   const [count, setCount] = useState(0)

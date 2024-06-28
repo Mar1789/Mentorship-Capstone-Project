@@ -1,8 +1,42 @@
+<<<<<<< Updated upstream
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+=======
+.mission {
+  justify-content: center;
+  position: absolute;
+  color: black;
+  top: 12px;
+  bottom: 0;
+  right: 700px;
+  font-size: 20px;
+}
+.articles {
+  justify-content: center;
+  position: absolute;
+  color: black;
+  top: 12px;
+  bottom: 0;
+  right: 600px;
+  font-size: 20px;
+}
+.login {
+  justify-content: center;
+  position: absolute;
+  color: black;
+  top: 12px;
+  bottom: 0;
+  right: 500px;
+  font-size: 20px;
+>>>>>>> Stashed changes
+}
+h1 {
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 90px;
 }
 
 .logo {
@@ -40,3 +74,10 @@
 .read-the-docs {
   color: #888;
 }
+<<<<<<< Updated upstream
+=======
+body {
+  padding-top: 70px;
+  background-color: #313846;
+}
+>>>>>>> Stashed changes

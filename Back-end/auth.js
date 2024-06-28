@@ -35,7 +35,6 @@ app.post("/token", async(req, res) => {
         jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
             if(err){
                 res.sendStatus("INVALID")
-                console.log("Test");
             } else{
                 const accessToken = GenerateAccessToken({name: user.name, id: user.id})
                 res.json(accessToken);
