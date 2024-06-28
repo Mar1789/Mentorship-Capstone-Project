@@ -31,38 +31,46 @@ app.get("/posts", authenticate, async (req, res) => {
 });
 
 app.get("/user", authenticate, async (req, res) => {
-    const userId = res.locals.id;
-    const user = await prisma.User.findFirst({
-        where: {
-            id: userId
-        }
-    })
-    res.json(user);
-})
+  const userId = res.locals.id;
+  const user = await prisma.User.findFirst({
+    where: {
+      id: userId,
+    },
+  });
+  res.json(user);
+});
 
 app.post("/register", async (req, res) => {
-  // Create new accounts
   let { username, password, accountType } = req.body;
-  bcrypt.genSalt(saltRounds, (err, salt) => {
-    if (err) {
-      return;
-    }
-    bcrypt.hash(password, salt, async (err, hash) => {
+  const account = await prisma.User.findFirst({
+    where: {
+      username: username,
+    },
+  });
+  if (account) {
+    return res.json("Account already exists! Change username");
+  } else {
+    bcrypt.genSalt(saltRounds, (err, salt) => {
       if (err) {
-        // Handle error
         return;
       }
-      password = hash;
-      const user = await prisma.User.create({
-        data: {
-          username,
-          password,
-          accountType,
-        },
+      bcrypt.hash(password, salt, async (err, hash) => {
+        if (err) {
+          // Handle error
+          return;
+        }
+        password = hash;
+        const user = await prisma.User.create({
+          data: {
+            username,
+            password,
+            accountType,
+          },
+        });
+        res.json(user);
       });
-      res.json(user);
     });
-  });
+  }
 });
 
 function authenticate(req, res, next) {
