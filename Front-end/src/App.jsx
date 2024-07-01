@@ -4,6 +4,7 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Home from "./Home";
 import Member from "./Member";
+import CreatePost from "./CreatePost";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/member" element={<Member />} />
+        <Route path="/create-post" element={<CreatePost />} />
       </Routes>
     </BrowserRouter>
   );
