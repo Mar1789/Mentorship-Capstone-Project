@@ -11,6 +11,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import {
   FormField,
   FormInput,
+  FormSelect,
   Button,
   Checkbox,
   Message,
@@ -75,11 +76,20 @@ const Home = () => {
       let username;
       let password;
       let cpassword; // Comparison password
+      let FirstName;
+      let LastName;
+      let Role;
+      let Headline;
       const form = e.target;
       const formData = new FormData(form);
       username = formData.get("username");
       password = formData.get("password");
       cpassword = formData.get("confirm-password");
+      FirstName = formData.get("FirstName");
+      LastName = formData.get("LastName");
+      Headline = formData.get("Headline");
+      Role = e.target.querySelector("span.text").textContent;
+
       if (password !== cpassword) {
         return setUserError("Passwords do not match");
       }
@@ -91,7 +101,10 @@ const Home = () => {
         body: JSON.stringify({
           username: username,
           password: password,
-          accountType: "student",
+          FirstName: FirstName,
+          LastName: LastName,
+          Headline: Headline,
+          accountType: Role,
         }),
       }).then((data) =>
         data.json().then((data) => {
@@ -99,11 +112,17 @@ const Home = () => {
             setUserError("Account already exists! Change username");
           } else {
             setUserError("");
+            setLogin(true);
+            e.target.reset();
           }
         })
       );
     }
   }
+  const options = [
+    { key: "Mentor", text: "Mentor", value: "Mentor" },
+    { key: "Student", text: "Student", value: "Student" },
+  ];
   return (
     <>
       <header>
@@ -149,6 +168,19 @@ const Home = () => {
                   type="password"
                   name="confirm-password"
                   placeholder="Confirm Password"
+                  required
+                />
+                <label>First Name</label>
+                <FormInput name="FirstName" placeholder="First Name" required />
+                <label>Last Name</label>
+                <FormInput name="LastName" placeholder="Last Name" required />
+                <label>Headline</label>
+                <FormInput name="Headline" placeholder="Headline" required />
+                <label>Role</label>
+                <FormSelect
+                  name="role"
+                  placeholder="Role"
+                  options={options}
                   required
                 />
               </FormField>

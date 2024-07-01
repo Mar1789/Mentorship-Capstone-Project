@@ -41,7 +41,8 @@ app.get("/user", async (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  let { username, password, accountType } = req.body;
+  let { username, password, Headline, FirstName, LastName, accountType } =
+    req.body;
   const account = await prisma.User.findFirst({
     where: {
       username: username,
@@ -64,6 +65,9 @@ app.post("/register", async (req, res) => {
           data: {
             username,
             password,
+            Headline,
+            FirstName,
+            LastName,
             accountType,
           },
         });
