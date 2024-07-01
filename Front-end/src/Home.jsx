@@ -61,6 +61,7 @@ const Home = () => {
         data.json().then((data) => {
           if (data.accessToken) {
             localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
             localStorage.setItem("accessToken", data.accessToken);
             localStorage.setItem("refreshToken", data.refreshToken);
             setUserError("");
@@ -129,13 +130,13 @@ const Home = () => {
         <Navbar expand="lg" className="bg-body-tertiary" fixed="top">
           <Container>
             <Navbar.Brand href="/">PioneerPath</Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="me-auto">
+            <Navbar.Toggle/>
+            <Navbar.Collapse className="justify-content-end">
+              <Nav>
                 <Nav.Link href="#home">Our Mission</Nav.Link>
                 <Nav.Link href="#link">Articles</Nav.Link>
-                <Nav.Link onClick={handleShow}>Log In</Nav.Link>
               </Nav>
+              <Navbar.Text onClick={handleShow}>Log In</Navbar.Text>
             </Navbar.Collapse>
           </Container>
         </Navbar>
