@@ -29,12 +29,34 @@ app.get("/posts", async (req, res) => {
   });
   res.json(posts);
 });
+app.post("/post", async (req, res) => {
+  // Make posts made by user
+  const { description, title, id } = req.body;
+  const post = await prisma.posts.create({
+    data: {
+      userId: id,
+      description: description,
+      title: title,
+    },
+  });
+  res.json(post);
+});
 
-app.get("/user", async (req, res) => {
-  const userId = res.locals.id;
+app.get("/user/:id", async (req, res) => {
+  const userId = req.params.id;
   const user = await prisma.User.findFirst({
     where: {
-      id: userId,
+      username: userId,
+    },
+  });
+  res.json(user);
+});
+app.get("/commentUser/:id", async (req, res) => {
+  // Gets users for each comment
+  const userId = req.params.id;
+  const user = await prisma.User.findFirst({
+    where: {
+      id: parseInt(userId),
     },
   });
   res.json(user);

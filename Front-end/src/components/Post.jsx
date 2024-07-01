@@ -1,10 +1,33 @@
+import { useEffect, useState } from "react";
 import "./Post.css";
+import moment from "moment";
 
-const Post = () => {
-  let logo =
-    "Google’s interview process is long and arduous, seeming like a black box to many candidates. Not knowing what’s ahead makes it even harder to prepare. We’re here to help. We work with 50+ ex-Google interviewers on our platform, who have helped thousands of candidates navigate the Google interview process. Here’s what you need to know: Google’s interview process takes around one to two months, and there are seven steps: resume screen, recruiter call, phone screen(s), onsite interviews, hiring committee, team matching, and salary negotiation. The steps that will require the most preparation are the phone screens and onsite interviews. In the rest of this article, we’ll dive deep into each step and how you can prepare for it. Let’s get started.";
-  logo = logo.substring(0, 164) + "...";
+const Post = (props) => {
+  const [logo, setLogo] = useState("");
+  const [date, setDate] = useState("");
+  const [user, setUser] = useState([]);
+  function Author() {
+    fetch(`http://localhost:3000/commentUser/${props.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "Application/json",
+      },
+    }).then((data) =>
+      data.json().then((data) => {
+        setUser(data);
+      })
+    );
+  }
 
+  useEffect(() => {
+    Author();
+    setLogo(props.text);
+    if (logo.length > 164) {
+      setLogo(logo.substring(0, 164) + "...");
+    }
+    let dates = new Date(props.date).toLocaleDateString();
+    setDate(moment(new Date(dates)).format("MMMM D, Y"));
+  }, [date, logo, user]);
   return (
     <div className="post-border">
       <div className="profile">
@@ -12,12 +35,17 @@ const Post = () => {
           className="photo"
           src="https://react.semantic-ui.com/images/avatar/small/jenny.jpg"
         />
-        <p className="name">Jacob Pearson</p>
-        <p className="accountType">Software Engineer @ M </p>
+        <p className="name">{user.FirstName + " " + user.LastName}</p>
+        <p className="accountType">{user.Headline}</p>
       </div>
-      <h1 className="title">How to land a job at Google</h1>
-      <h3>{logo}</h3>
-      <div className="line"></div>
+      <h1 className="title">{props.title}</h1>
+      <h3 className="description">{logo}</h3>
+      <img
+        className="thumbnail-image"
+        src="https://cdn.sanity.io/images/oaglaatp/production/c7c17eecf2f0e103ef0b6b098bae16bf7ad6bdee-1200x800.png?w=1200&h=800&auto=format"
+      />
+      <p className="date">{date}</p>
+      <p className="comments">💬6</p>
     </div>
   );
 };

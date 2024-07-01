@@ -1,9 +1,8 @@
 .post-border {
-  width: 80vh;
-  height: 40vh;
-  margin-left: 500px;
-  border: 0.5px solid #f4f4f4;
-  /* box-shadow: 0 20px 40px rgba(0,0,0,.1); */
+  position: relative;
+  width: 893px;
+  height: 33vh;
+  /* border: 0.5px solid #f4f4f4; */
 }
 .profile {
   height: 63px;
@@ -24,14 +23,40 @@
   margin-left: 62px;
 }
 .line {
+  position: absolute;
   border: 0.0023px solid black;
-  top: 70px;
+  /* top: 70px; */
 }
 .title {
-  width: auto;
-  position: relative;
+  position: absolute;
   left: 2px;
+  top: 58px;
 }
 #more {
   display: none;
+}
+.thumbnail-image {
+  top: 38px;
+  right: 3px;
+  width: 300px;
+  position: absolute;
+}
+
+.description {
+  text-align: left;
+  font-size: 14px;
+  width: 560px;
+  left: 2px;
+  top: 119px;
+  position: absolute;
+}
+.date {
+  left: 5px;
+  top: 233px;
+  position: absolute;
+}
+.comments {
+  top: 233px;
+  position: absolute;
+  left: 170px;
 }

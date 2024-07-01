@@ -54,13 +54,13 @@ app.get("/auth", async (req, res) => {
     if (err) {
       res.json("Invalid Token");
     } else {
-        res.json(user);
+      res.json(user);
     }
   });
 });
 
 app.delete("/logout", authenticate, async (req, res) => {
-  const userId = res.locals.id;
+  const userId = res.locals.name;
   const deleteToken = await prisma.token.deleteMany({
     where: {
       userId: {
@@ -132,7 +132,7 @@ app.post("/login", async (req, res) => {
 
 function GenerateAccessToken(userprofile) {
   return jwt.sign(userprofile, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "5s",
+    expiresIn: "1hr",
   });
 }
 
@@ -146,7 +146,8 @@ function authenticate(req, res, next) {
     if (err) {
       res.json("Invalid Token");
     }
-    res.locals.id = user.id;
+    res.locals.id = user.name;
+    res.locals.name = user.id;
     next();
   });
 }
