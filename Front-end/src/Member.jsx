@@ -10,7 +10,7 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Post from "./components/Post";
 
-import { GridRow, GridColumn, Grid, Image } from "semantic-ui-react";
+import { GridRow, GridColumn, Grid } from "semantic-ui-react";
 
 const Member = () => {
   const [user, setUser] = useState();
@@ -133,18 +133,20 @@ const Member = () => {
       )}
       <div className="post-center">
         <Grid divided="vertically" className="sizing">
-          {posts.map((post) => (
-            <GridRow columns={1} key={post.Post_id}>
-              <GridColumn>
-                <Post
-                  id={post.userId}
-                  date={post.createdAt}
-                  text={post.description}
-                  title={post.title}
-                />
-              </GridColumn>
-            </GridRow>
-          ))}
+          {info &&
+            posts.map((post) => (
+              <GridRow columns={1} key={post.Post_id}>
+                <GridColumn>
+                  <Post
+                    userid={info.id}
+                    id={post.Post_id}
+                    date={post.createdAt}
+                    text={post.description}
+                    title={post.title}
+                  />
+                </GridColumn>
+              </GridRow>
+            ))}
         </Grid>
       </div>
     </>

@@ -1,13 +1,48 @@
 import { useEffect, useState } from "react";
 import "./Post.css";
 import moment from "moment";
+import { Icon } from "semantic-ui-react";
 
 const Post = (props) => {
   const [logo, setLogo] = useState("");
   const [date, setDate] = useState("");
   const [user, setUser] = useState([]);
+  const [like, setLike] = useState("");
+  const [likecount, setLikecount] = useState(0);
+
+  function SetLike() {
+    // userid = User ID of logged in
+    // .id = ID of the post
+    fetch(`http://localhost:3000/likeUser/${props.id}/${props.userid}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "Application/json",
+      },
+    }).then((data) =>
+      data.json().then((data) => {
+        if (data === 0) {
+          setLike("heart outline");
+        } else {
+          setLike("heart");
+        }
+        GetLikes();
+      })
+    );
+  }
+  function GetLikes() {
+    fetch(`http://localhost:3000/likes/${props.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "Application/json",
+      },
+    }).then((data) =>
+      data.json().then((data) => {
+        setLikecount(data);
+      })
+    );
+  }
   function Author() {
-    fetch(`http://localhost:3000/commentUser/${props.id}`, {
+    fetch(`http://localhost:3000/commentUser/${props.userid}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -18,8 +53,36 @@ const Post = (props) => {
       })
     );
   }
+  function handleLike() {
+    if (like === "heart outline") {
+      fetch(`http://localhost:3000/likes/${props.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+        body: JSON.stringify({ userId: props.userid }),
+      }).then((data) =>
+        data.json().then((data) => {
+          setLike("heart");
+        })
+      );
+    } else {
+      fetch(`http://localhost:3000/likes/${props.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+        body: JSON.stringify({ userId: props.userid }),
+      }).then((data) =>
+        data.json().then((data) => {
+          setLike("heart outline");
+        })
+      );
+    }
+  }
 
   useEffect(() => {
+    SetLike();
     Author();
     setLogo(props.text);
     if (logo.length > 164) {
@@ -27,7 +90,7 @@ const Post = (props) => {
     }
     let dates = new Date(props.date).toLocaleDateString();
     setDate(moment(new Date(dates)).format("MMMM D, Y"));
-  }, [date, logo, user]);
+  }, [logo, like]);
   return (
     <div className="post-border">
       <div className="profile">
@@ -46,6 +109,9 @@ const Post = (props) => {
       />
       <p className="date">{date}</p>
       <p className="comments">💬6</p>
+      <Icon onClick={handleLike} className="like" name={like}>
+        {likecount}
+      </Icon>
     </div>
   );
 };

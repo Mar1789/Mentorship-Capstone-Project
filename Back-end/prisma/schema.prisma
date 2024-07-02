@@ -11,13 +11,14 @@ model User {
   id          Int      @id @default(autoincrement())
   username    String   @unique
   password    String
-  Headline      String
+  Headline    String
   FirstName   String
   LastName    String
   accountType String
   date        DateTime @default(now())
   Posts       Posts[]
   Token       Token[]
+  Like        Like[]
 }
 
 model Token {
@@ -36,4 +37,13 @@ model Posts {
   description String
   title       String
   User        User     @relation(fields: [userId], references: [id])
+  Like        Like[]
+}
+
+model Like {
+  like_id   Int      @id @default(autoincrement())
+  Post_id   Int
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+  Posts     Posts    @relation(fields: [Post_id], references: [Post_id])
 }

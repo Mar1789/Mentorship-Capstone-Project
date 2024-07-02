@@ -16,6 +16,82 @@ app.use(express.json());
 app.listen(PORT, () => {
   console.log(`Server is Running: ${PORT}`);
 });
+app.delete("/likes/:id", async (req, res) => {
+  // Delete likes from a post
+  const postId = parseInt(req.params.id);
+  const UserId = parseInt(req.body.userId);
+  const count = await prisma.like.count({
+    where: {
+      Post_id: {
+        equals: postId,
+      },
+      userId: UserId,
+    },
+  });
+  if (count === 1) {
+    const like = await prisma.like.deleteMany({
+      where: {
+        Post_id: {
+          equals: postId,
+        },
+        userId: UserId,
+      },
+    });
+    res.json(like);
+  } else {
+    res.json("User already deleted. Sorry!");
+  }
+});
+app.post("/likes/:id", async (req, res) => {
+  // Add like to a post
+  const postId = parseInt(req.params.id);
+  const UserId = parseInt(req.body.userId);
+  const count = await prisma.like.count({
+    where: {
+      Post_id: {
+        equals: postId,
+      },
+      userId: UserId,
+    },
+  });
+  if (count === 0) {
+    const like = await prisma.like.create({
+      data: {
+        userId: UserId,
+        Post_id: postId,
+      },
+    });
+    res.json(like);
+  } else {
+    res.json("User already liked. Sorry!");
+  }
+});
+app.get("/likeUser/:id/:user", async (req, res) => {
+  // Checks if user liked or not when page loads
+  const postId = parseInt(req.params.id);
+  const UserId = parseInt(req.params.user);
+  const count = await prisma.like.count({
+    where: {
+      Post_id: {
+        equals: postId,
+      },
+      userId: UserId,
+    },
+  });
+  res.json(count);
+});
+app.get("/likes/:id", async (req, res) => {
+  // Gets likes for a specific post
+  const postId = req.params.id;
+  const likes = await prisma.like.count({
+    where: {
+      Post_id: {
+        equals: parseInt(postId),
+      },
+    },
+  });
+  res.json(likes);
+});
 
 app.get("/posts", async (req, res) => {
   // Gets posts made by user
@@ -52,7 +128,7 @@ app.get("/user/:id", async (req, res) => {
   res.json(user);
 });
 app.get("/commentUser/:id", async (req, res) => {
-  // Gets users for each comment
+  // Gets users for each Post
   const userId = req.params.id;
   const user = await prisma.User.findFirst({
     where: {
