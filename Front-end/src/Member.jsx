@@ -140,6 +140,7 @@ const Member = () => {
                   <Post
                     userid={info.id}
                     id={post.Post_id}
+                    author={post.userId}
                     date={post.createdAt}
                     text={post.description}
                     title={post.title}

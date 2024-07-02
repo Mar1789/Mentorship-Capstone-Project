@@ -42,7 +42,7 @@ const Post = (props) => {
     );
   }
   function Author() {
-    fetch(`http://localhost:3000/commentUser/${props.userid}`, {
+    fetch(`http://localhost:3000/commentUser/${props.author}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
