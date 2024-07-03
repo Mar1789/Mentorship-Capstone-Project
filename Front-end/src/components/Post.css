@@ -1,7 +1,9 @@
 .post-border {
   position: relative;
   width: 893px;
-  height: 33vh;
+  height: auto;
+  display: flex;
+  flex-direction: column;
   /* border: 0.5px solid #f4f4f4; */
 }
 .profile {
@@ -28,8 +30,9 @@
   /* top: 70px; */
 }
 .title {
-  position: absolute;
-  left: 2px;
+  display: flex;
+  margin-top: 0px;
+  margin-right: auto;
   top: 58px;
 }
 #more {
@@ -43,25 +46,37 @@
 }
 
 .description {
+  word-wrap: break-word;
+  white-space: normal;
+
   text-align: left;
   font-size: 14px;
   width: 560px;
-  left: 2px;
-  top: 119px;
-  position: absolute;
 }
 .date {
   left: 5px;
   top: 233px;
-  position: absolute;
+  display: inline-block;
 }
 .comments {
   top: 233px;
-  position: absolute;
   left: 170px;
+  display: inline-block;
 }
 .like {
-  position: absolute;
   top: 233px;
   left: 140px;
+  display: inline-block;
+}
+
+footer {
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+  height: auto;
+}
+
+.comment-section {
+  justify-content: center;
+  text-align: left;
 }
