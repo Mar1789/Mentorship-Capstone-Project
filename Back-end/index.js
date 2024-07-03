@@ -93,6 +93,19 @@ app.get("/likes/:id", async (req, res) => {
   res.json(likes);
 });
 
+app.get("/commentcount/:id", async (req, res) => {
+  // Get comment count to display for each post
+  const postId = req.params.id;
+  const commentCount = await prisma.comments.count({
+    where: {
+      Post_id: {
+        equals: parseInt(postId),
+      },
+    },
+  });
+  res.json(commentCount);
+});
+
 app.get("/posts", async (req, res) => {
   // Gets posts made by user
   const userId = res.locals.id;
@@ -127,6 +140,31 @@ app.get("/user/:id", async (req, res) => {
   });
   res.json(user);
 });
+
+app.get("/comments/:id", async (req, res) => {
+  // Get Comments from post
+  const PostId = req.params.id;
+  const comments = await prisma.comments.findMany({
+    where: {
+      Post_id: parseInt(PostId),
+    },
+  });
+  res.json(comments);
+});
+
+app.post("/comment/:id", async (req, res) => {
+  const PostId = req.params.id;
+  const { userId, comment } = req.body;
+  const newComment = await prisma.comments.create({
+    data: {
+      userId: parseInt(userId),
+      Post_id: parseInt(PostId),
+      comment: comment,
+    },
+  });
+  res.json(newComment);
+});
+
 app.get("/commentUser/:id", async (req, res) => {
   // Gets users for each Post
   const userId = req.params.id;

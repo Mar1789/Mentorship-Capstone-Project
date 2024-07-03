@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
 import "./Post.css";
+import "semantic-ui-css/semantic.min.css";
+
 import moment from "moment";
-import { Icon } from "semantic-ui-react";
+import { Icon, CommentGroup, Form } from "semantic-ui-react";
+import Comment from "./sub-component/Comment";
 
 const Post = (props) => {
   const [logo, setLogo] = useState("");
   const [date, setDate] = useState("");
   const [user, setUser] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [text, setText] = useState("");
   const [like, setLike] = useState("");
+  const [seeLess, setSeeLess] = useState(false);
   const [likecount, setLikecount] = useState(0);
+  const [commentcount, setcommentcount] = useState(0);
 
   function SetLike() {
     // userid = User ID of logged in
@@ -53,6 +60,7 @@ const Post = (props) => {
       })
     );
   }
+
   function handleLike() {
     if (like === "heart outline") {
       fetch(`http://localhost:3000/likes/${props.id}`, {
@@ -81,38 +89,117 @@ const Post = (props) => {
     }
   }
 
+  function handleComment(e) {
+    e.preventDefault();
+    let comment;
+    const form = e.target;
+    const formData = new FormData(form);
+    comment = formData.get("comment-response");
+    fetch(`http://localhost:3000/comment/${props.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "Application/json",
+      },
+      body: JSON.stringify({ userId: props.userid, comment: comment }),
+    }).then((data) =>
+      data.json().then((data) => {
+        GetComments();
+        CommentCount();
+        e.target.reset();
+      })
+    );
+  }
+
+  function GetComments() {
+    fetch(`http://localhost:3000/comments/${props.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "Application/json",
+      },
+    }).then((data) =>
+      data.json().then((data) => {
+        setComments(data);
+      })
+    );
+  }
+  function CommentCount() {
+    fetch(`http://localhost:3000/commentcount/${props.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "Application/json",
+      },
+    }).then((data) =>
+      data.json().then((data) => {
+        setcommentcount(data);
+      })
+    );
+  }
+
   useEffect(() => {
     SetLike();
     Author();
+    setText(props.text);
     setLogo(props.text);
+    CommentCount();
     if (logo.length > 164) {
       setLogo(logo.substring(0, 164) + "...");
+      setSeeLess(false);
+    } else {
+      setSeeLess(true);
     }
+    GetComments();
     let dates = new Date(props.date).toLocaleDateString();
     setDate(moment(new Date(dates)).format("MMMM D, Y"));
   }, [logo, like]);
   return (
-    <div className="post-border">
-      <div className="profile">
+    <>
+      <div className="post-border">
+        <div className="profile">
+          <img
+            className="photo"
+            src="https://react.semantic-ui.com/images/avatar/small/jenny.jpg"
+          />
+          <p className="name">{user.FirstName + " " + user.LastName}</p>
+          <p className="accountType">{user.Headline}</p>
+        </div>
+        <h1 className="title">{props.title}</h1>
+        <h3 className="description">
+          {seeLess === true ? text : logo}
+          {seeLess === false && (
+            <a onClick={() => setSeeLess(true)}> See More</a>
+          )}
+        </h3>
         <img
-          className="photo"
-          src="https://react.semantic-ui.com/images/avatar/small/jenny.jpg"
+          className="thumbnail-image"
+          src="https://cdn.sanity.io/images/oaglaatp/production/c7c17eecf2f0e103ef0b6b098bae16bf7ad6bdee-1200x800.png?w=1200&h=800&auto=format"
         />
-        <p className="name">{user.FirstName + " " + user.LastName}</p>
-        <p className="accountType">{user.Headline}</p>
+        <footer>
+          <p className="date">{date}</p>
+          <p className="comments">💬{commentcount}</p>
+          <Icon onClick={handleLike} className="like" name={like}>
+            {likecount}
+          </Icon>
+        </footer>
+        <hr />
       </div>
-      <h1 className="title">{props.title}</h1>
-      <h3 className="description">{logo}</h3>
-      <img
-        className="thumbnail-image"
-        src="https://cdn.sanity.io/images/oaglaatp/production/c7c17eecf2f0e103ef0b6b098bae16bf7ad6bdee-1200x800.png?w=1200&h=800&auto=format"
-      />
-      <p className="date">{date}</p>
-      <p className="comments">💬6</p>
-      <Icon onClick={handleLike} className="like" name={like}>
-        {likecount}
-      </Icon>
-    </div>
+      <div className="comment-section">
+        <h3>Comments</h3>
+        <CommentGroup>
+          {comments.map((comment) => (
+            <Comment
+              key={comment.comment_id}
+              author={comment.userId}
+              created={comment.createdAt}
+              comment={comment.comment}
+            />
+          ))}
+          <Form onSubmit={handleComment}>
+            <label>Enter your comment here: </label>
+            <input name="comment-response"></input>
+          </Form>
+        </CommentGroup>
+      </div>
+    </>
   );
 };
 export default Post;

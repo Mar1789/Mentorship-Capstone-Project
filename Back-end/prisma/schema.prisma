@@ -8,17 +8,18 @@ datasource db {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  username    String   @unique
+  id          Int        @id @default(autoincrement())
+  username    String     @unique
   password    String
   Headline    String
   FirstName   String
   LastName    String
   accountType String
-  date        DateTime @default(now())
+  date        DateTime   @default(now())
   Posts       Posts[]
   Token       Token[]
   Like        Like[]
+  Comments    Comments[]
 }
 
 model Token {
@@ -31,19 +32,30 @@ model Token {
 }
 
 model Posts {
-  Post_id     Int      @id @default(autoincrement())
+  Post_id     Int        @id @default(autoincrement())
   userId      Int
-  createdAt   DateTime @default(now())
+  createdAt   DateTime   @default(now())
   description String
   title       String
-  User        User     @relation(fields: [userId], references: [id])
+  User        User       @relation(fields: [userId], references: [id])
   Like        Like[]
+  Comments    Comments[]
 }
 
 model Like {
-  like_id   Int      @id @default(autoincrement())
-  Post_id   Int
-  userId    Int
-  User      User     @relation(fields: [userId], references: [id])
-  Posts     Posts    @relation(fields: [Post_id], references: [Post_id])
+  like_id Int   @id @default(autoincrement())
+  Post_id Int
+  userId  Int
+  User    User  @relation(fields: [userId], references: [id])
+  Posts   Posts @relation(fields: [Post_id], references: [Post_id])
+}
+
+model Comments {
+  comment_id Int      @id @default(autoincrement())
+  userId     Int
+  Post_id    Int
+  createdAt  DateTime @default(now())
+  User       User     @relation(fields: [userId], references: [id])
+  Posts      Posts    @relation(fields: [Post_id], references: [Post_id])
+  comment String
 }
