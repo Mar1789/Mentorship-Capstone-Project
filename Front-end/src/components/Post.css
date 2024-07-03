@@ -30,9 +30,11 @@
   /* top: 70px; */
 }
 .title {
-  display: flex;
+  text-align: left;
   margin-top: 0px;
   margin-right: auto;
+  width: 560px;
+  word-wrap: break-word;
   top: 58px;
 }
 #more {
