@@ -8,6 +8,10 @@ import Nav from "react-bootstrap/Nav";
 import Modal from "react-bootstrap/Modal";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import Companies from "../public/Big_Five_Tech_companies.png";
+
+import { Slide } from "react-slideshow-image";
+
 import {
   FormField,
   FormInput,
@@ -18,7 +22,9 @@ import {
   Form,
 } from "semantic-ui-react";
 
+import "react-slideshow-image/dist/styles.css";
 import "./App.css";
+// import "./components/slide.css"
 
 const Home = () => {
   const [show, setShow] = useState(false);
@@ -124,13 +130,28 @@ const Home = () => {
     { key: "Mentor", text: "Mentor", value: "Mentor" },
     { key: "Student", text: "Student", value: "Student" },
   ];
+
+  const properties = {
+    duration: 2000,
+    autoplay: false,
+    transitionDuration: 900,
+    arrows: false,
+    infinite: true,
+    easing: "ease",
+    indicators: true,
+  };
+  const slideImages = [
+    "https://cdn.careerfoundry.com/en/wp-content/uploads/old-blog-uploads/mentorship-uxdesign-programs.jpg",
+    "https://mae.ufl.edu/wp-content/uploads/2020/07/group-1024x682.jpg",
+    "https://shpeuf.s3.amazonaws.com/public/home/home-2.jpg",
+  ];
   return (
     <>
       <header>
         <Navbar expand="lg" className="bg-body-tertiary" fixed="top">
           <Container>
             <Navbar.Brand href="/">PioneerPath</Navbar.Brand>
-            <Navbar.Toggle/>
+            <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
               <Nav>
                 <Nav.Link href="#home">Our Mission</Nav.Link>
@@ -142,7 +163,37 @@ const Home = () => {
         </Navbar>
       </header>
 
-      <img src="https://www.betterup.com/hubfs/Blog%20Images/Coach%20or%20mentor/coach-or-mentor%20woman%20talks%20to%20coach.jpg" />
+      <div className="slideshowImage">
+        <Slide {...properties}>
+          {slideImages.map((slideImage, index) => (
+            <div key={index}>
+              <div key={index} className="each-slide">
+                <img className="water" src={slideImage} alt="sample" />
+              </div>
+            </div>
+          ))}
+        </Slide>
+      </div>
+      <hr className="slideline" />
+      <p className="quote">
+        Join a community of brillant students who want to break into the tech
+        field
+        <br />
+        <br />
+        Meet skilled mentors who want to help and give back to the community
+        <br />
+        <br />
+        Join Today!
+      </p>
+      <div className="alumni">
+        <h2>Where our Alumni are working after PioneerTech</h2>
+        <img
+          className="companylogo"
+          src={Companies}
+          onLoad={(e) => (e.target.style.opacity = "1")}
+        />
+      </div>
+
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>{login ? "Login" : "Register"} </Modal.Title>
@@ -201,7 +252,6 @@ const Home = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <h1 className="h1">Welcome to PioneerPath!</h1>
     </>
   );
 };

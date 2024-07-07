@@ -22,9 +22,7 @@ app.delete("/likes/:id", async (req, res) => {
   const UserId = parseInt(req.body.userId);
   const count = await prisma.like.count({
     where: {
-      Post_id: {
-        equals: postId,
-      },
+      Post_id: postId,
       userId: UserId,
     },
   });
@@ -129,6 +127,11 @@ app.post("/post", async (req, res) => {
     },
   });
   res.json(post);
+});
+
+app.get("/users", async (req, res) => {
+  const user = await prisma.User.findMany();
+  res.json(user);
 });
 
 app.get("/user/:id", async (req, res) => {

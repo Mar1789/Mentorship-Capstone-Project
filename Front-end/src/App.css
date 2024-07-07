@@ -82,3 +82,66 @@ h1 {
 .margin {
   margin-top: 24px;
 }
+
+.pname {
+  left: 337px;
+  position: absolute;
+}
+.profile-card {
+  height: auto;
+  margin-top: 40px;
+  justify-content: center;
+}
+
+.react-slideshow-container {
+  margin-top: 10px;
+  justify-content: left;
+  margin-left: -28px;
+  width: 700px;
+  height: 500px;
+}
+.indicators {
+  margin-top: 8px !important;
+  left: 280px;
+  position: absolute;
+}
+.slideline {
+  position: relative;
+  top: 14px;
+}
+.water {
+  margin-top: 10px;
+  width: 700px;
+  height: 500px;
+}
+.slideshowImage {
+  position: relative;
+  left: 100px;
+  width: auto;
+}
+.quote {
+  font-family: Verdana, sans-serif;
+  width: 498px;
+  display: flex;
+  margin-left: 801px;
+  font-size: 30px;
+  margin-top: -492px;
+  text-align: left;
+}
+.alumni {
+  position: relative;
+  top: 100px;
+  height: 280px;
+  width: 100vw;
+}
+.companylogo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute;
+  opacity: 0;
+  transition: opacity 3s;
+  width: 70%;
+  left: 220px;
+  height: auto;
+}
