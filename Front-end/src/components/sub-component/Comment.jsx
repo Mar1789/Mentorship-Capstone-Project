@@ -38,7 +38,10 @@ const Comments = (props) => {
     <Comment>
       <CommentAvatar src="https://react.semantic-ui.com/images/avatar/small/matt.jpg" />
       <CommentContent>
-        <CommentAuthor as="a" onClick={() => window.location.href=`/profile-${comment.id}`}>
+        <CommentAuthor
+          as="a"
+          onClick={() => (window.location.href = `/profile-${comment.id}`)}
+        >
           {comment.FirstName + " " + comment.LastName}
         </CommentAuthor>
         <CommentMetadata>

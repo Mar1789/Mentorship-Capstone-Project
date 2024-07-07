@@ -132,8 +132,7 @@ app.post("/post", async (req, res) => {
 app.get("/users", async (req, res) => {
   const user = await prisma.User.findMany();
   res.json(user);
-})
-
+});
 
 app.get("/user/:id", async (req, res) => {
   const userId = req.params.id;
@@ -179,7 +178,6 @@ app.get("/commentUser/:id", async (req, res) => {
   });
   res.json(user);
 });
-
 
 app.post("/register", async (req, res) => {
   let { username, password, Headline, FirstName, LastName, accountType } =

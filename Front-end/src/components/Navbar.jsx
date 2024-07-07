@@ -4,9 +4,6 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 // import Logo from "../../public/Logo.png"
 
-
-
-
 const NavBar = (props) => {
   async function LogOut() {
     const token = localStorage.getItem("accessToken");
@@ -24,35 +21,34 @@ const NavBar = (props) => {
       })
     );
   }
-  
+
   return (
     <Navbar expand="lg" className="bg-body-tertiary" fixed="top">
-        <Container>
-            {/* <img src={Logo} className="logo"/> */}
-          <Navbar.Brand href="/">PioneerPath</Navbar.Brand>
-          <Navbar.Toggle />
-          <Navbar.Collapse className="justify-content-end">
-            <Nav>
-              <Nav.Link className="link" href="/create-post">
-                Create a Post
-              </Nav.Link>
-              <Nav.Link className="link" href="#link">
-                Articles
-              </Nav.Link>
-              {props.info && (
-                <NavDropdown
-                  title={props.info.FirstName + " " + props.info.LastName}
-                  id="collapsible-nav-dropdown"
-                >
-                  <NavDropdown.Item>Settings</NavDropdown.Item>
-                  <NavDropdown.Item onClick={LogOut}>Sign Out</NavDropdown.Item>
-                </NavDropdown>
-              )}
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-  )
-}
+      <Container>
+        <Navbar.Brand href="/">PioneerPath</Navbar.Brand>
+        <Navbar.Toggle />
+        <Navbar.Collapse className="justify-content-end">
+          <Nav>
+            <Nav.Link className="link" href="/create-post">
+              Create a Post
+            </Nav.Link>
+            <Nav.Link className="link" href="#link">
+              Articles
+            </Nav.Link>
+            {props.info && (
+              <NavDropdown
+                title={props.info.FirstName + " " + props.info.LastName}
+                id="collapsible-nav-dropdown"
+              >
+                <NavDropdown.Item>Settings</NavDropdown.Item>
+                <NavDropdown.Item onClick={LogOut}>Sign Out</NavDropdown.Item>
+              </NavDropdown>
+            )}
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  );
+};
 
 export default NavBar;

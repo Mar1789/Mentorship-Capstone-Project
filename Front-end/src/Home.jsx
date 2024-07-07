@@ -8,7 +8,7 @@ import Nav from "react-bootstrap/Nav";
 import Modal from "react-bootstrap/Modal";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import Companies from "../public/Big_Five_Tech_companies.png"
+import Companies from "../public/Big_Five_Tech_companies.png";
 
 import { Slide } from "react-slideshow-image";
 
@@ -162,33 +162,37 @@ const Home = () => {
           </Container>
         </Navbar>
       </header>
-      
+
       <div className="slideshowImage">
         <Slide {...properties}>
           {slideImages.map((slideImage, index) => (
             <div key={index}>
               <div key={index} className="each-slide">
-                <img className="water" src={slideImage} alt="sample"/>
+                <img className="water" src={slideImage} alt="sample" />
               </div>
             </div>
           ))}
         </Slide>
       </div>
-      <hr className="slideline"/>
+      <hr className="slideline" />
       <p className="quote">
-        Join a community of brillant students who want to break into the tech field
-        <br/>
-        <br/>
+        Join a community of brillant students who want to break into the tech
+        field
+        <br />
+        <br />
         Meet skilled mentors who want to help and give back to the community
-        <br/>
-        <br/>
+        <br />
+        <br />
         Join Today!
       </p>
       <div className="alumni">
         <h2>Where our Alumni are working after PioneerTech</h2>
-      <img className="companylogo" src={Companies} onLoad={((e) => e.target.style.opacity="1")}/>
+        <img
+          className="companylogo"
+          src={Companies}
+          onLoad={(e) => (e.target.style.opacity = "1")}
+        />
       </div>
-
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -248,7 +252,6 @@ const Home = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-      {/* <h1 className="h1">Welcome to PioneerPath!</h1> */}
     </>
   );
 };

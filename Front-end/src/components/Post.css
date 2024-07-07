@@ -4,7 +4,6 @@
   height: auto;
   display: flex;
   flex-direction: column;
-  /* border: 0.5px solid #f4f4f4; */
 }
 .profile {
   height: 63px;
@@ -27,7 +26,6 @@
 .line {
   position: absolute;
   border: 0.0023px solid black;
-  /* top: 70px; */
 }
 .title {
   text-align: left;
@@ -83,6 +81,6 @@ footer {
   text-align: left;
 }
 
-.logo{
+.logo {
   width: 26px;
 }

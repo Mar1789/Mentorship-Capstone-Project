@@ -158,10 +158,20 @@ const Post = (props) => {
           <img
             className="photo"
             src="https://react.semantic-ui.com/images/avatar/small/jenny.jpg"
-            onClick={() => window.location.href=`/profile-${user.id}`}
+            onClick={() => (window.location.href = `/profile-${user.id}`)}
           />
-          <p className="name" onClick={() => window.location.href=`/profile-${user.id}`}>{user.FirstName + " " + user.LastName}</p>
-          <p className="accountType" onClick={() => window.location.href=`/profile-${user.id}`}>{user.Headline}</p>
+          <p
+            className="name"
+            onClick={() => (window.location.href = `/profile-${user.id}`)}
+          >
+            {user.FirstName + " " + user.LastName}
+          </p>
+          <p
+            className="accountType"
+            onClick={() => (window.location.href = `/profile-${user.id}`)}
+          >
+            {user.Headline}
+          </p>
         </div>
         <h1 className="title">{props.title}</h1>
         <h3 className="description">

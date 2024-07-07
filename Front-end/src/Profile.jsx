@@ -23,7 +23,6 @@ const Profile = (props) => {
   const [profile, setProfile] = useState();
   const [func, setFunc] = useState(false);
 
-
   async function Auth() {
     let token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/auth", {
@@ -134,7 +133,6 @@ const Profile = (props) => {
           </Card>
         )}
       </div>
-      
     </>
   );
 };
