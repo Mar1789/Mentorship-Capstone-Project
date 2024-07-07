@@ -158,9 +158,10 @@ const Post = (props) => {
           <img
             className="photo"
             src="https://react.semantic-ui.com/images/avatar/small/jenny.jpg"
+            onClick={() => window.location.href=`/profile-${user.id}`}
           />
-          <p className="name">{user.FirstName + " " + user.LastName}</p>
-          <p className="accountType">{user.Headline}</p>
+          <p className="name" onClick={() => window.location.href=`/profile-${user.id}`}>{user.FirstName + " " + user.LastName}</p>
+          <p className="accountType" onClick={() => window.location.href=`/profile-${user.id}`}>{user.Headline}</p>
         </div>
         <h1 className="title">{props.title}</h1>
         <h3 className="description">
@@ -169,10 +170,7 @@ const Post = (props) => {
             <a onClick={() => setSeeLess(true)}> See More</a>
           )}
         </h3>
-        <img
-          className="thumbnail-image"
-          src="https://cdn.sanity.io/images/oaglaatp/production/c7c17eecf2f0e103ef0b6b098bae16bf7ad6bdee-1200x800.png?w=1200&h=800&auto=format"
-        />
+
         <footer>
           <p className="date">{date}</p>
           <p className="comments">💬{commentcount}</p>

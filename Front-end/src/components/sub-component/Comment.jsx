@@ -24,7 +24,6 @@ const Comments = (props) => {
       },
     }).then((data) =>
       data.json().then((data) => {
-        console.log(data);
         setComment(data);
       })
     );
@@ -39,7 +38,7 @@ const Comments = (props) => {
     <Comment>
       <CommentAvatar src="https://react.semantic-ui.com/images/avatar/small/matt.jpg" />
       <CommentContent>
-        <CommentAuthor as="a">
+        <CommentAuthor as="a" onClick={() => window.location.href=`/profile-${comment.id}`}>
           {comment.FirstName + " " + comment.LastName}
         </CommentAuthor>
         <CommentMetadata>
