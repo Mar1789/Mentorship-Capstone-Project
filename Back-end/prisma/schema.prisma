@@ -11,15 +11,17 @@ model User {
   id          Int        @id @default(autoincrement())
   username    String     @unique
   password    String
-  Headline    String
-  FirstName   String
-  LastName    String
   accountType String
   date        DateTime   @default(now())
+  FirstName   String
+  LastName    String
+  Headline    String
+  state       String
+  age         Int
+  Comments    Comments[]
+  Like        Like[]
   Posts       Posts[]
   Token       Token[]
-  Like        Like[]
-  Comments    Comments[]
 }
 
 model Token {
@@ -37,17 +39,17 @@ model Posts {
   createdAt   DateTime   @default(now())
   description String
   title       String
-  User        User       @relation(fields: [userId], references: [id])
-  Like        Like[]
   Comments    Comments[]
+  Like        Like[]
+  User        User       @relation(fields: [userId], references: [id])
 }
 
 model Like {
   like_id Int   @id @default(autoincrement())
   Post_id Int
   userId  Int
-  User    User  @relation(fields: [userId], references: [id])
   Posts   Posts @relation(fields: [Post_id], references: [Post_id])
+  User    User  @relation(fields: [userId], references: [id])
 }
 
 model Comments {
@@ -55,7 +57,7 @@ model Comments {
   userId     Int
   Post_id    Int
   createdAt  DateTime @default(now())
-  User       User     @relation(fields: [userId], references: [id])
+  comment    String
   Posts      Posts    @relation(fields: [Post_id], references: [Post_id])
-  comment String
+  User       User     @relation(fields: [userId], references: [id])
 }
