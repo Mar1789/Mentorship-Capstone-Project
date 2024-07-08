@@ -21,26 +21,27 @@ app.post("/token", async (req, res) => {
   const refreshToken = req.body.token;
   if (refreshToken === null) {
     res.json("FAILED");
-  }
-  const count = await prisma.token.count({
-    where: {
-      token: refreshToken,
-    },
-  });
-  if (count === 0) {
-    res.json(count);
   } else {
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-      if (err) {
-        res.json("INVALID");
-      } else {
-        const accessToken = GenerateAccessToken({
-          name: user.name,
-          id: user.id,
-        });
-        res.json(accessToken);
-      }
+    const count = await prisma.token.count({
+      where: {
+        token: refreshToken,
+      },
     });
+    if (count === 0) {
+      res.json(count);
+    } else {
+      jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) {
+          res.json("INVALID");
+        } else {
+          const accessToken = GenerateAccessToken({
+            name: user.name,
+            id: user.id,
+          });
+          res.json(accessToken);
+        }
+      });
+    }
   }
 });
 
