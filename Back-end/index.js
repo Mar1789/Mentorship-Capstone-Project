@@ -180,8 +180,16 @@ app.get("/commentUser/:id", async (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  let { username, password, Headline, FirstName, LastName, accountType, age, state } =
-    req.body;
+  let {
+    username,
+    password,
+    Headline,
+    FirstName,
+    LastName,
+    accountType,
+    age,
+    state,
+  } = req.body;
   const account = await prisma.User.findFirst({
     where: {
       username: username,
@@ -209,7 +217,7 @@ app.post("/register", async (req, res) => {
             LastName,
             accountType,
             age: parseInt(age),
-            state
+            state,
           },
         });
         res.json(user);
