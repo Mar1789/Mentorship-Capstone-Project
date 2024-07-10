@@ -30,17 +30,21 @@ app.post("/token", async (req, res) => {
     if (count === 0) {
       res.json(count);
     } else {
-      jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-        if (err) {
-          res.json("INVALID");
-        } else {
-          const accessToken = GenerateAccessToken({
-            name: user.name,
-            id: user.id,
-          });
-          res.json(accessToken);
+      jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+        (err, user) => {
+          if (err) {
+            res.json("INVALID");
+          } else {
+            const accessToken = GenerateAccessToken({
+              name: user.name,
+              id: user.id,
+            });
+            res.json(accessToken);
+          }
         }
-      });
+      );
     }
   }
 });

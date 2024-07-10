@@ -21,6 +21,8 @@ const Profile = (props) => {
   const [user, setUser] = useState();
   const [info, setInfo] = useState("");
   const [profile, setProfile] = useState();
+  const [followers, setFollowers] = useState();
+  const [status, setStatus] = useState();
   const [func, setFunc] = useState(false);
 
   async function Auth() {
@@ -98,19 +100,80 @@ const Profile = (props) => {
       })
     );
   }
+  function Followers() {
+    fetch(`http://localhost:3000/followers/${profile.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "Application/json",
+      },
+    }).then((data) =>
+      data.json().then((data) => {
+        setFollowers(data);
+      })
+    );
+  }
+  function SetFollow() {
+    fetch(`http://localhost:3000/followUser/${user.id}/${profile.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "Application/json",
+      },
+    }).then((data) =>
+      data.json().then((data) => {
+        if (data === 0) {
+          setStatus("Follow");
+        } else {
+          setStatus("Unfollow");
+        }
+      })
+    );
+  }
+  function handleFollow() {
+    if (status === "Follow") {
+      fetch(`http://localhost:3000/follow/${profile.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+        body: JSON.stringify({ followId: user.id }),
+      }).then((data) =>
+        data.json().then((data) => {
+          setStatus("Unfollow");
+        })
+      );
+    } else {
+      fetch(`http://localhost:3000/follow/${profile.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+        body: JSON.stringify({ followId: user.id }),
+      }).then((data) =>
+        data.json().then((data) => {
+          setStatus("Follow");
+        })
+      );
+    }
+  }
 
   useEffect(() => {
     Auth();
-    if (user && func === false) {
+  }, []);
+  useEffect(() => {
+    if (user) {
       Member2();
-      UProfile();
-      setFunc(true);
     }
-  }, [user]);
+    UProfile();
+    if (profile && user) {
+      SetFollow();
+      Followers();
+    }
+    setFunc(true);
+  }, [user, status, followers]);
 
   return (
     <>
-      {info && <NavBar info={info} />}
+      <NavBar info={info} />
       <div className="profile-card">
         {profile && date && (
           <Card>
@@ -127,9 +190,10 @@ const Profile = (props) => {
             <CardContent extra>
               <a>
                 <Icon name="user" />
-                22 Followers
+                {followers} Followers
               </a>
             </CardContent>
+            {profile && user && profile.id !== user.id && <button onClick={handleFollow}>{status}</button>}
           </Card>
         )}
       </div>

@@ -30,9 +30,7 @@ app.delete("/likes/:id", async (req, res) => {
   if (count === 1) {
     const like = await prisma.like.deleteMany({
       where: {
-        Post_id: {
-          equals: postId,
-        },
+        Post_id: postId,
         userId: UserId,
       },
     });
@@ -41,6 +39,29 @@ app.delete("/likes/:id", async (req, res) => {
     res.json("User already deleted. Sorry!");
   }
 });
+app.delete("/follow/:id", async (req, res) => {
+  // Removes following
+  const userId = parseInt(req.params.id); // user to follow
+  const followerId = parseInt(req.body.followId); // user who wants to follow
+  const count = await prisma.follow.count({
+    where: {
+      followerId: followerId,
+      userId: userId,
+    },
+  });
+  if (count === 1) {
+    const follow = await prisma.follow.deleteMany({
+      where: {
+        followerId: followerId,
+        userId: userId,
+      },
+    });
+    res.json(follow);
+  } else {
+    res.json("User already deleted. Sorry!");
+  }
+});
+
 app.post("/likes/:id", async (req, res) => {
   // Add like to a post
   const postId = parseInt(req.params.id);
@@ -65,6 +86,28 @@ app.post("/likes/:id", async (req, res) => {
     res.json("User already liked. Sorry!");
   }
 });
+app.post("/follow/:id", async (req, res) => {
+  // Follow a user
+  const userId = parseInt(req.params.id); // user to follow
+  const followerId = parseInt(req.body.followId); // user who wants to follow
+  const count = await prisma.follow.count({
+    where: {
+      followerId: followerId,
+      userId: userId,
+    },
+  });
+  if (count === 0) {
+    const follow = await prisma.follow.create({
+      data: {
+        followerId: followerId,
+        userId: userId,
+      },
+    });
+    res.json(follow);
+  } else {
+    res.json("User already liked. Sorry!");
+  }
+});
 app.get("/likeUser/:id/:user", async (req, res) => {
   // Checks if user liked or not when page loads
   const postId = parseInt(req.params.id);
@@ -79,17 +122,37 @@ app.get("/likeUser/:id/:user", async (req, res) => {
   });
   res.json(count);
 });
+app.get("/followUser/:follower/:user", async (req, res) => {
+  // Checks if user liked or not when page loads
+  const followerId = parseInt(req.params.follower);
+  const userId = parseInt(req.params.user);
+  const count = await prisma.follow.count({
+    where: {
+      followerId: followerId,
+      userId: userId,
+    },
+  });
+  res.json(count);
+});
 app.get("/likes/:id", async (req, res) => {
-  // Gets likes for a specific post
+  // Gets likes count for a specific post
   const postId = req.params.id;
   const likes = await prisma.like.count({
     where: {
-      Post_id: {
-        equals: parseInt(postId),
-      },
+      Post_id: parseInt(postId),
     },
   });
   res.json(likes);
+});
+app.get("/followers/:id", async (req, res) => {
+  // Gets follow count for a specific post
+  const userId = req.params.id;
+  const followers = await prisma.follow.count({
+    where: {
+      userId: parseInt(userId),
+    },
+  });
+  res.json(followers);
 });
 
 app.get("/commentcount/:id", async (req, res) => {
@@ -227,58 +290,3 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.get("/match/:age/:state/:keyword", async (req, res) => {
-  let users = []; // Hold users when filtering by states
-  let matches = []; // Hold users when filtering by age
-  let results; // Similarity score
-  let map1 = new Map(); // Storing users with the similarity score as the key and the value using the user information
-  const age = req.params.age,
-    state = req.params.state,
-    keyword = req.params.keyword;
-  const data = await prisma.User.findMany({
-    // Gets users from the database
-    where: {
-      accountType: "Mentor",
-    },
-  });
-  data.map((user) => {
-    if (user.state === state) {
-      users.push(user);
-    }
-  });
-  if (users.length === 0) {
-    // res.status(404).send(`No mentors exist in the state of ${state} yet! Will display mentors from all states`)
-    users = data;
-  }
-  if (age.charAt(2) === "-") {
-    console.log(users);
-    users.map((user) => {
-      if (user.age >= age.substring(0, 2) && user.age <= age.substring(3, 5)) {
-        matches.push(user);
-      }
-    });
-  } else if (age === "38+") {
-    users.map((user) => {
-      if (user.age >= 38) {
-        matches.push(user);
-      }
-    });
-  }
-  if (matches.length === 0) {
-    // If no account has the desired age or if the user chose 18+
-    // res.status(404).send(`No mentors exist in the age range of ${age} yet! Will display mentors from all ages`)
-    matches = users;
-  }
-  matches.map((user) => {
-    results = similarity(keyword, user.Headline);
-    console.log(results, user);
-    if (results > 0.1) {
-      // If the similarity is >10%, add it to the map
-      map1.set(results, user);
-    }
-  });
-  map1 = new Map([...map1.entries()].sort()); // Sorts the map
-  users = Array.from(map1.values()); // Adds the users from least to most similar into an array
-  users = users.sort().reverse(); // Reverse the array so it is shown from most similar to least
-  res.json(users);
-});

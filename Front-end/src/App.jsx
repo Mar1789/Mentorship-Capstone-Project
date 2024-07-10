@@ -8,10 +8,10 @@ import Member from "./Member";
 import CreatePost from "./CreatePost";
 import Profile from "./Profile";
 
-function App() {
+ function App() {
   const [users, setUsers] = useState([]);
-  function GetUsers() {
-    fetch("http://localhost:3000/users", {
+   async function GetUsers() {
+    await fetch("http://localhost:3000/users", {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
