@@ -25,7 +25,7 @@ const MatchMentor = (props) => {
   const [user, setUser] = useState();
   const [info, setInfo] = useState("");
   const [profile, setProfile] = useState();
-  const [results, setResults] = useState(false);
+  const [mentors, setMentors] = useState([]);
   const [func, setFunc] = useState(false);
 
   async function Auth() {
@@ -106,7 +106,7 @@ const MatchMentor = (props) => {
       },
     }).then((data) =>
       data.json().then((data) => {
-        console.log(data);
+        setMentors(data);
       })
     );
   }
@@ -117,7 +117,7 @@ const MatchMentor = (props) => {
       Member2();
       setFunc(true);
     }
-  }, [user]);
+  }, [user, mentors]);
   return (
     <>
       {info && <NavBar info={info} />}
@@ -193,36 +193,34 @@ const MatchMentor = (props) => {
             <input name="interest" placeholder="What interest you?" required />
             <button type="submit">Submit</button>
           </FormField>
-          {/* {results && ( */}
-          <div className="mentors">
-            <CardGroup>
-              <Card className="card-align">
-                <CardContent>
-                  <Image
-                    floated="right"
-                    size="mini"
-                    src="https://react.semantic-ui.com/images/avatar/large/jenny.jpg"
-                  />
-                  <CardHeader>Jenny Lawrence</CardHeader>
-                  <CardMeta>New User</CardMeta>
-                  <CardDescription>
-                    Jenny requested permission to view your contact details
-                  </CardDescription>
-                </CardContent>
-                <CardContent extra>
-                  <div className="ui two buttons">
-                    <Button basic color="green">
-                      Approve
-                    </Button>
-                    <Button basic color="red">
-                      Decline
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </CardGroup>
-          </div>
-          {/* )} */}
+          <CardGroup>
+          {
+          mentors.map((mentor, index) => (
+                <Card className="card-align" key={index}>
+                  <CardContent>
+                    <Image
+                      floated="right"
+                      size="mini"
+                      src="https://react.semantic-ui.com/images/avatar/large/jenny.jpg"
+                    />
+                    <CardHeader>{mentor.FirstName} {mentor.LastName}</CardHeader>
+                    <CardMeta>{mentor.Headline}</CardMeta>
+                    <CardMeta>Located in {mentor.state}</CardMeta>
+                    <CardDescription>X Followers</CardDescription>
+                  </CardContent>
+                  <CardContent extra>
+                    <div className="ui two buttons">
+                      <Button basic color="green">
+                        Follow
+                      </Button>
+                      <Button basic color="red">
+                        Decline
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+          ))}
+          </CardGroup>
         </Form>
       </div>
     </>
