@@ -30,9 +30,7 @@ app.delete("/likes/:id", async (req, res) => {
   if (count === 1) {
     const like = await prisma.like.deleteMany({
       where: {
-        Post_id: {
-          equals: postId,
-        },
+        Post_id: postId,
         userId: UserId,
       },
     });
@@ -41,6 +39,29 @@ app.delete("/likes/:id", async (req, res) => {
     res.json("User already deleted. Sorry!");
   }
 });
+app.delete("/follow/:id", async (req, res) => {
+  // Removes following
+  const userId = parseInt(req.params.id); // user to follow
+  const followerId = parseInt(req.body.followId); // user who wants to follow
+  const count = await prisma.follow.count({
+    where: {
+      followerId: followerId,
+      userId: userId,
+    },
+  });
+  if (count === 1) {
+    const follow = await prisma.follow.deleteMany({
+      where: {
+        followerId: followerId,
+        userId: userId,
+      },
+    });
+    res.json(follow);
+  } else {
+    res.json("User already deleted. Sorry!");
+  }
+});
+
 app.post("/likes/:id", async (req, res) => {
   // Add like to a post
   const postId = parseInt(req.params.id);
@@ -65,6 +86,28 @@ app.post("/likes/:id", async (req, res) => {
     res.json("User already liked. Sorry!");
   }
 });
+app.post("/follow/:id", async (req, res) => {
+  // Follow a user
+  const userId = parseInt(req.params.id); // user to follow
+  const followerId = parseInt(req.body.followId); // user who wants to follow
+  const count = await prisma.follow.count({
+    where: {
+      followerId: followerId,
+      userId: userId,
+    },
+  });
+  if (count === 0) {
+    const follow = await prisma.follow.create({
+      data: {
+        followerId: followerId,
+        userId: userId,
+      },
+    });
+    res.json(follow);
+  } else {
+    res.json("User already liked. Sorry!");
+  }
+});
 app.get("/likeUser/:id/:user", async (req, res) => {
   // Checks if user liked or not when page loads
   const postId = parseInt(req.params.id);
@@ -79,17 +122,37 @@ app.get("/likeUser/:id/:user", async (req, res) => {
   });
   res.json(count);
 });
+app.get("/followUser/:follower/:user", async (req, res) => {
+  // Checks if user liked or not when page loads
+  const followerId = parseInt(req.params.follower);
+  const userId = parseInt(req.params.user);
+  const count = await prisma.follow.count({
+    where: {
+      followerId: followerId,
+      userId: userId,
+    },
+  });
+  res.json(count);
+});
 app.get("/likes/:id", async (req, res) => {
-  // Gets likes for a specific post
+  // Gets likes count for a specific post
   const postId = req.params.id;
   const likes = await prisma.like.count({
     where: {
-      Post_id: {
-        equals: parseInt(postId),
-      },
+      Post_id: parseInt(postId),
     },
   });
   res.json(likes);
+});
+app.get("/followers/:id", async (req, res) => {
+  // Gets follow count for a specific post
+  const userId = req.params.id;
+  const followers = await prisma.follow.count({
+    where: {
+      userId: parseInt(userId),
+    },
+  });
+  res.json(followers);
 });
 
 app.get("/commentcount/:id", async (req, res) => {
