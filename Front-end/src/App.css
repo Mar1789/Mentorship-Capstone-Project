@@ -145,3 +145,13 @@ h1 {
   left: 220px;
   height: auto;
 }
+
+.card-align {
+  text-align: left;
+  height: auto;
+}
+.cardtext {
+  width: 50%;
+  text-wrap: wrap;
+  color: red;
+}

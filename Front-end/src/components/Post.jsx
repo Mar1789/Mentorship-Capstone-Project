@@ -174,7 +174,7 @@ const Post = (props) => {
           </p>
         </div>
         <h1 className="title">{props.title}</h1>
-        <h3 className="description">
+        <h3 className="p-description">
           {seeLess === true ? text : logo}
           {seeLess === false && (
             <a onClick={() => setSeeLess(true)}> See More</a>

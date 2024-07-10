@@ -4,10 +4,7 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "semantic-ui-css/semantic.min.css";
 
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import NavBar from "./components/Navbar";
 import Post from "./components/Post";
 
 import { GridRow, GridColumn, Grid } from "semantic-ui-react";
@@ -103,29 +100,7 @@ const Member = () => {
 
   return (
     <>
-      <Navbar expand="lg" className="bg-body-tertiary" fixed="top">
-        <Container>
-          <Navbar.Brand href="/">PioneerPath</Navbar.Brand>
-          <Navbar.Toggle />
-          <Navbar.Collapse className="justify-content-end">
-            <Nav>
-              <Nav.Link className="link" href="/create-post">
-                Create a Post
-              </Nav.Link>
-              <Nav.Link className="link" href="#link">
-                Articles
-              </Nav.Link>
-              <NavDropdown
-                title={info.FirstName + " " + info.LastName}
-                id="collapsible-nav-dropdown"
-              >
-                <NavDropdown.Item>Settings</NavDropdown.Item>
-                <NavDropdown.Item onClick={LogOut}>Sign Out</NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+      {info && <NavBar info={info} />}
       {info && (
         <h1 className="welcome">
           Welcome: {info.FirstName + " " + info.LastName}
