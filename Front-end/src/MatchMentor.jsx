@@ -190,8 +190,15 @@ const MatchMentor = (props) => {
               <option value="WY">Wyoming</option>
             </select>
             <label>What interest you?</label>
-            <input name="interest" placeholder="What interest you?" required />
-            <button type="submit">Submit</button>
+            <select name="interest" placeholder="What interest you?" min="18" required>
+              <option value="">Select an interest</option>
+              <option value="SWE">Software Engineering</option>
+              <option value="Nuclear Engineer">Nuclear Engineering</option>
+              <option value="Industrial Engineer">Industrial Engineering</option>
+              <option value="Data Engineer">Data Engineering</option>
+              <option value="Product Manager">Product Management</option>
+              <option value="Civil Engineer">Civil Engineering</option>
+            </select>            <button type="submit">Submit</button>
           </FormField>
           <CardGroup>
           {
