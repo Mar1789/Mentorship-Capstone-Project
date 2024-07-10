@@ -57,7 +57,7 @@ const Profile = (props) => {
         }
       })
     );
-  }   
+  }
   async function LogOut() {
     const token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/logout", {
@@ -113,7 +113,6 @@ const Profile = (props) => {
     );
   }
   function SetFollow() {
-
     fetch(`http://localhost:3000/followUser/${user.id}/${profile.id}`, {
       method: "GET",
       headers: {
@@ -129,48 +128,46 @@ const Profile = (props) => {
       })
     );
   }
-  function handleFollow(){
+  function handleFollow() {
     if (status === "Follow") {
-      console.log("TEST", profile.id)
       fetch(`http://localhost:3000/follow/${profile.id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "Application/json",
-      },
-      body: JSON.stringify({ followId: user.id})
-    }).then((data) =>
-      data.json().then((data) => {
-        setStatus("Unfollow");
-      })
-    );
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+        body: JSON.stringify({ followId: user.id }),
+      }).then((data) =>
+        data.json().then((data) => {
+          setStatus("Unfollow");
+        })
+      );
     } else {
       fetch(`http://localhost:3000/follow/${profile.id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "Application/json",
-      },
-      body: JSON.stringify({ followId: user.id})
-    }).then((data) =>
-      data.json().then((data) => {
-        setStatus("Follow");
-      })
-    );
+        method: "DELETE",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+        body: JSON.stringify({ followId: user.id }),
+      }).then((data) =>
+        data.json().then((data) => {
+          setStatus("Follow");
+        })
+      );
     }
   }
 
-useEffect(() => {
-  Auth();
-}, [])
   useEffect(() => {
-    if(user) {
+    Auth();
+  }, []);
+  useEffect(() => {
+    if (user) {
       Member2();
     }
     UProfile();
-    if(profile && user) {
+    if (profile && user) {
       SetFollow();
       Followers();
     }
-    console.log("ping")
     setFunc(true);
   }, [user, status, followers]);
 
