@@ -227,18 +227,21 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.get("/match", async (req, res) => {
+app.get("/match/:age/:state/:keyword", async (req, res) => {
   let users = []; // Hold users when filtering by states
   let matches = []; // Hold users when filtering by age
   let results; // Similarity score
   let map1 = new Map(); // Storing users with the similarity score as the key and the value using the user information
-  const { age, state, keyword } = req.body;
-  const data = await prisma.User.findMany({ // Gets users from the database
+  const age = req.params.age,
+    state = req.params.state,
+    keyword = req.params.keyword;
+  const data = await prisma.User.findMany({
+    // Gets users from the database
     where: {
-      accountType: "Mentor", 
+      accountType: "Mentor",
     },
   });
-  users.map((user) => {
+  data.map((user) => {
     if (user.state === state) {
       users.push(user);
     }
@@ -248,6 +251,7 @@ app.get("/match", async (req, res) => {
     users = data;
   }
   if (age.charAt(2) === "-") {
+    console.log(users);
     users.map((user) => {
       if (user.age >= age.substring(0, 2) && user.age <= age.substring(3, 5)) {
         matches.push(user);
@@ -267,8 +271,9 @@ app.get("/match", async (req, res) => {
   }
   matches.map((user) => {
     results = similarity(keyword, user.Headline);
-    if (results > 0.4) {
-      // If the similarity is >40%, add it to the map
+    console.log(results, user);
+    if (results > 0.1) {
+      // If the similarity is >10%, add it to the map
       map1.set(results, user);
     }
   });
