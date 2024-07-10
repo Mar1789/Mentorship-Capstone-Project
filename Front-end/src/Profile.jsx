@@ -193,7 +193,7 @@ const Profile = (props) => {
                 {followers} Followers
               </a>
             </CardContent>
-            <button onClick={handleFollow}>{status}</button>
+            {profile && user && profile.id !== user.id && <button onClick={handleFollow}>{status}</button>}
           </Card>
         )}
       </div>
