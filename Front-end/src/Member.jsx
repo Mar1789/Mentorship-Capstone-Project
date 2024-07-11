@@ -38,7 +38,7 @@ const Member = () => {
             body: JSON.stringify({ token: token }),
           }).then((data) =>
             data.json().then((data) => {
-              if (data === "Invalid Token") {
+              if (data === "Invalid Token" || data === "FAILED") {
                 window.location.href = "/";
               } else {
                 localStorage.setItem("accessToken", data);

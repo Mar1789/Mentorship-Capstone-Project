@@ -18,8 +18,6 @@ const Post = (props) => {
   const [commentcount, setcommentcount] = useState(0);
 
   function SetLike() {
-    // userid = User ID of logged in
-    // .id = ID of the post
     fetch(`http://localhost:3000/likeUser/${props.id}/${props.userid}`, {
       method: "GET",
       headers: {
@@ -103,14 +101,14 @@ const Post = (props) => {
       body: JSON.stringify({ userId: props.userid, comment: comment }),
     }).then((data) =>
       data.json().then((data) => {
-        GetComments();
+        getComments();
         CommentCount();
         e.target.reset();
       })
     );
   }
 
-  function GetComments() {
+  function getComments() {
     fetch(`http://localhost:3000/comments/${props.id}`, {
       method: "GET",
       headers: {
@@ -147,7 +145,7 @@ const Post = (props) => {
     } else {
       setSeeLess(true);
     }
-    GetComments();
+    getComments();
     let dates = new Date(props.date).toLocaleDateString();
     setDate(moment(new Date(dates)).format("MMMM D, Y"));
   }, [logo, like]);
