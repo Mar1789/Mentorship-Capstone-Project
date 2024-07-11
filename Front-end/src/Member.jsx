@@ -4,10 +4,7 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "semantic-ui-css/semantic.min.css";
 
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import NavBar from "./components/Navbar";
 import Post from "./components/Post";
 
 import { GridRow, GridColumn, Grid } from "semantic-ui-react";

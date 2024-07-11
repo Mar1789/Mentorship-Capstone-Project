@@ -7,6 +7,7 @@ import Home from "./Home";
 import Member from "./Member";
 import CreatePost from "./CreatePost";
 import Profile from "./Profile";
+import MatchMentor from "./MatchMentor";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -32,6 +33,7 @@ function App() {
         <Route path="/member" element={<Member />} />
         <Route path="/create-post" element={<CreatePost />} />
         <Route path="/settings" element={<CreatePost />} />
+        <Route path="/match-mentor" element={<MatchMentor />} />
         {users.map((user) => (
           <Route
             key={user.id}

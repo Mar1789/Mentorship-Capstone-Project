@@ -29,6 +29,9 @@ const NavBar = (props) => {
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           <Nav>
+            <Nav.Link className="link" href="/match-mentor">
+              Match with a Mentor
+            </Nav.Link>
             <Nav.Link className="link" href="/create-post">
               Create a Post
             </Nav.Link>
