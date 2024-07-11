@@ -22,10 +22,12 @@ const Profile = (props) => {
   const [info, setInfo] = useState("");
   const [profile, setProfile] = useState();
   const [followers, setFollowers] = useState();
-  const [status, setStatus] = useState();
+  const [isFollowing, setIsFollowing] = useState(false);
+  const follow = "Follow";
+  const followed = "Unfollow";
   const [func, setFunc] = useState(false);
 
-  async function Auth() {
+  async function auth() {
     let token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/auth", {
       method: "GET",
@@ -58,7 +60,7 @@ const Profile = (props) => {
       })
     );
   }
-  async function LogOut() {
+  async function logOut() {
     const token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/logout", {
       method: "DELETE",
@@ -74,7 +76,7 @@ const Profile = (props) => {
       })
     );
   }
-  async function Member2() {
+  async function member2() {
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -86,7 +88,7 @@ const Profile = (props) => {
       })
     );
   }
-  async function UProfile() {
+  async function uProfile() {
     await fetch(`http://localhost:3000/user/${props.name}`, {
       method: "GET",
       headers: {
@@ -94,13 +96,13 @@ const Profile = (props) => {
       },
     }).then((data) =>
       data.json().then((data) => {
-        let dates = new Date(data.date).toLocaleDateString();
+        const dates = new Date(data.date).toLocaleDateString();
         setDate(moment(new Date(dates)).format("MMMM D, Y"));
         setProfile(data);
       })
     );
   }
-  function Followers() {
+  function getFollowers() {
     fetch(`http://localhost:3000/followers/${profile.id}`, {
       method: "GET",
       headers: {
@@ -112,7 +114,7 @@ const Profile = (props) => {
       })
     );
   }
-  function SetFollow() {
+  function setFollow() {
     fetch(`http://localhost:3000/followUser/${user.id}/${profile.id}`, {
       method: "GET",
       headers: {
@@ -121,15 +123,15 @@ const Profile = (props) => {
     }).then((data) =>
       data.json().then((data) => {
         if (data === 0) {
-          setStatus("Follow");
+          setIsFollowing(false);
         } else {
-          setStatus("Unfollow");
+          setIsFollowing(true);
         }
       })
     );
   }
   function handleFollow() {
-    if (status === "Follow") {
+    if (isFollowing === false) {
       fetch(`http://localhost:3000/follow/${profile.id}`, {
         method: "POST",
         headers: {
@@ -138,7 +140,7 @@ const Profile = (props) => {
         body: JSON.stringify({ followId: user.id }),
       }).then((data) =>
         data.json().then((data) => {
-          setStatus("Unfollow");
+          setIsFollowing(true);
         })
       );
     } else {
@@ -150,26 +152,26 @@ const Profile = (props) => {
         body: JSON.stringify({ followId: user.id }),
       }).then((data) =>
         data.json().then((data) => {
-          setStatus("Follow");
+          setIsFollowing(false)
         })
       );
     }
   }
 
   useEffect(() => {
-    Auth();
+    auth();
   }, []);
   useEffect(() => {
     if (user) {
-      Member2();
+      member2();
     }
-    UProfile();
+    uProfile();
     if (profile && user) {
-      SetFollow();
-      Followers();
+      setFollow();
+      getFollowers();
     }
     setFunc(true);
-  }, [user, status, followers]);
+  }, [user, isFollowing, followers]);
 
   return (
     <>
@@ -193,7 +195,7 @@ const Profile = (props) => {
                 {followers} Followers
               </a>
             </CardContent>
-            {profile && user && profile.id !== user.id && <button onClick={handleFollow}>{status}</button>}
+            {profile && user && profile.id !== user.id && <button onClick={handleFollow}>{isFollowing ? followed : follow}</button>}
           </Card>
         )}
       </div>
