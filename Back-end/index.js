@@ -268,3 +268,52 @@ app.post("/register", async (req, res) => {
   }
 });
 
+app.get("/match/:age/:state/:keyword", async (req, res) => {
+  let users = []; 
+  let matches = []; 
+  let results; 
+  let map1 = new Map();
+  const age = req.params.age,
+    state = req.params.state,
+    keyword = req.params.keyword;
+  const data = await prisma.User.findMany({
+    where: {
+      accountType: "Mentor",
+    },
+  });
+
+  data.map((user) => {
+    if (user.state === state) {
+      users.push(user);
+    }
+  });
+  if (users.length === 0) {
+    users = data;
+  }
+  if (age.charAt(2) === "-") {
+    users.map((user) => {
+      if (user.age >= age.substring(0, 2) && user.age <= age.substring(3, 5)) {
+        matches.push(user);
+      }
+    });
+  } else if (age === "38+") {
+    users.map((user) => {
+      if (user.age >= 38) {
+        matches.push(user);
+      }
+    });
+  }
+  if (matches.length === 0) {
+    matches = users;
+  }
+  matches.map((user) => {
+    results = similarity(keyword, user.Headline);
+    if (results > 0.1) {
+      map1.set(results, user);
+    }
+  });
+  map1 = new Map([...map1.entries()].sort()); 
+  users = Array.from(map1.values()); 
+  users = users.sort().reverse();
+  res.json(users);
+});
