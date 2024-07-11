@@ -27,7 +27,7 @@ const MatchMentor = (props) => {
   const [profile, setProfile] = useState();
   const [mentors, setMentors] = useState([]);
   const [func, setFunc] = useState(false);
-  const invalid = "Invalid Token"
+  const invalid = "Invalid Token";
 
   async function auth() {
     let token = localStorage.getItem("accessToken");
@@ -188,43 +188,52 @@ const MatchMentor = (props) => {
               <option value="WY">Wyoming</option>
             </select>
             <label>What interest you?</label>
-            <select name="interest" placeholder="What interest you?" min="18" required>
+            <select
+              name="interest"
+              placeholder="What interest you?"
+              min="18"
+              required
+            >
               <option value="">Select an interest</option>
               <option value="SWE">Software Engineering</option>
               <option value="Nuclear Engineer">Nuclear Engineering</option>
-              <option value="Industrial Engineer">Industrial Engineering</option>
+              <option value="Industrial Engineer">
+                Industrial Engineering
+              </option>
               <option value="Data Engineer">Data Engineering</option>
               <option value="Product Manager">Product Management</option>
               <option value="Civil Engineer">Civil Engineering</option>
-            </select>            <button type="submit">Submit</button>
+            </select>{" "}
+            <button type="submit">Submit</button>
           </FormField>
           <CardGroup>
-          {
-          mentors.map((mentor, index) => (
-                <Card className="card-align" key={index}>
-                  <CardContent>
-                    <Image
-                      floated="right"
-                      size="mini"
-                      src="https://react.semantic-ui.com/images/avatar/large/jenny.jpg"
-                    />
-                    <CardHeader>{mentor.FirstName} {mentor.LastName}</CardHeader>
-                    <CardMeta>{mentor.Headline}</CardMeta>
-                    <CardMeta>Located in {mentor.state}</CardMeta>
-                    <CardDescription>X Followers</CardDescription>
-                  </CardContent>
-                  <CardContent extra>
-                    <div className="ui two buttons">
-                      <Button basic color="green">
-                        Follow
-                      </Button>
-                      <Button basic color="red">
-                        Decline
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-          ))}
+            {mentors.map((mentor, index) => (
+              <Card className="card-align" key={index}>
+                <CardContent>
+                  <Image
+                    floated="right"
+                    size="mini"
+                    src="https://react.semantic-ui.com/images/avatar/large/jenny.jpg"
+                  />
+                  <CardHeader>
+                    {mentor.FirstName} {mentor.LastName}
+                  </CardHeader>
+                  <CardMeta>{mentor.Headline}</CardMeta>
+                  <CardMeta>Located in {mentor.state}</CardMeta>
+                  <CardDescription>X Followers</CardDescription>
+                </CardContent>
+                <CardContent extra>
+                  <div className="ui two buttons">
+                    <Button basic color="green">
+                      Follow
+                    </Button>
+                    <Button basic color="red">
+                      Decline
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </CardGroup>
         </Form>
       </div>

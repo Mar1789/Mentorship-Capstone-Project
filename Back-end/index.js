@@ -251,7 +251,6 @@ app.get("/match/:age/:state/:keyword", async (req, res) => {
     users = data;
   }
   if (age.charAt(2) === "-") {
-    console.log(users);
     users.map((user) => {
       if (user.age >= age.substring(0, 2) && user.age <= age.substring(3, 5)) {
         matches.push(user);
@@ -271,7 +270,6 @@ app.get("/match/:age/:state/:keyword", async (req, res) => {
   }
   matches.map((user) => {
     results = similarity(keyword, user.Headline);
-    console.log(results, user);
     if (results > 0.1) {
       // If the similarity is >10%, add it to the map
       map1.set(results, user);
