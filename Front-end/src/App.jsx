@@ -8,9 +8,9 @@ import Member from "./Member";
 import CreatePost from "./CreatePost";
 import Profile from "./Profile";
 
- function App() {
+function App() {
   const [users, setUsers] = useState([]);
-   async function GetUsers() {
+  async function getUsers() {
     await fetch("http://localhost:3000/users", {
       method: "GET",
       headers: {
@@ -23,7 +23,7 @@ import Profile from "./Profile";
     );
   }
   useEffect(() => {
-    GetUsers();
+    getUsers();
   }, []);
   return (
     <BrowserRouter>
