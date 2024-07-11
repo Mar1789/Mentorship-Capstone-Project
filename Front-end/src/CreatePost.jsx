@@ -13,6 +13,7 @@ const CreatePost = () => {
   const [user, setUser] = useState();
   const [info, setInfo] = useState("");
   const [func, setFunc] = useState(false);
+  const invalid = "Invalid Token";
 
   async function logOut() {
     const token = localStorage.getItem("accessToken");
@@ -61,7 +62,7 @@ const CreatePost = () => {
       },
     }).then((data) =>
       data.json().then((data) => {
-        if (data === "Invalid Token") {
+        if (data === invalid) {
           token = localStorage.getItem("refreshToken");
           fetch("http://localhost:4000/token", {
             method: "POST",
@@ -71,7 +72,7 @@ const CreatePost = () => {
             body: JSON.stringify({ token: token }),
           }).then((data) =>
             data.json().then((data) => {
-              if (data === "Invalid Token") {
+              if (data === invalid) {
                 window.location.href = "/";
               } else {
                 localStorage.setItem("accessToken", data);
