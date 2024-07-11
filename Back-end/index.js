@@ -39,7 +39,7 @@ app.delete("/likes/:id", async (req, res) => {
   }
 });
 app.delete("/follow/:id", async (req, res) => {
-  const userId = parseInt(req.params.id); 
+  const userId = parseInt(req.params.id);
   const followerId = parseInt(req.body.followId);
   const count = await prisma.follow.count({
     where: {
@@ -147,7 +147,7 @@ app.get("/commentcount/:id", async (req, res) => {
   const postId = req.params.id;
   const commentCount = await prisma.comments.count({
     where: {
-      Post_id: parseInt(postId)
+      Post_id: parseInt(postId),
     },
   });
   res.json(commentCount);
@@ -157,7 +157,7 @@ app.get("/posts", async (req, res) => {
   const userId = res.locals.id;
   const posts = await prisma.posts.findMany({
     where: {
-      userId: userId
+      userId: userId,
     },
   });
   res.json(posts);
@@ -269,10 +269,11 @@ app.post("/register", async (req, res) => {
 });
 
 app.get("/match/:age/:state/:keyword", async (req, res) => {
-  let users = []; 
-  let matches = []; 
-  let results; 
+  let users = [];
+  let matches = [];
+  let results;
   let map1 = new Map();
+  const senior = "65";
   const age = req.params.age,
     state = req.params.state,
     keyword = req.params.keyword;
@@ -296,9 +297,9 @@ app.get("/match/:age/:state/:keyword", async (req, res) => {
         matches.push(user);
       }
     });
-  } else if (age === "38+") {
+  } else if (age === senior + "+") {
     users.map((user) => {
-      if (user.age >= 38) {
+      if (user.age >= parseInt(senior)) {
         matches.push(user);
       }
     });
@@ -312,8 +313,8 @@ app.get("/match/:age/:state/:keyword", async (req, res) => {
       map1.set(results, user);
     }
   });
-  map1 = new Map([...map1.entries()].sort()); 
-  users = Array.from(map1.values()); 
+  map1 = new Map([...map1.entries()].sort());
+  users = Array.from(map1.values());
   users = users.sort().reverse();
   res.json(users);
 });
