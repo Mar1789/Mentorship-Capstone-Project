@@ -27,8 +27,9 @@ const MatchMentor = (props) => {
   const [profile, setProfile] = useState();
   const [mentors, setMentors] = useState([]);
   const [func, setFunc] = useState(false);
+  const invalid = "Invalid Token"
 
-  async function Auth() {
+  async function auth() {
     let token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/auth", {
       method: "GET",
@@ -38,7 +39,7 @@ const MatchMentor = (props) => {
       },
     }).then((data) =>
       data.json().then((data) => {
-        if (data === "Invalid Token") {
+        if (data === invalid) {
           token = localStorage.getItem("refreshToken");
           fetch("http://localhost:4000/token", {
             method: "POST",
@@ -48,7 +49,7 @@ const MatchMentor = (props) => {
             body: JSON.stringify({ token: token }),
           }).then((data) =>
             data.json().then((data) => {
-              if (data === "Invalid Token") {
+              if (data === invalid) {
                 window.location.href = "/";
               } else {
                 localStorage.setItem("accessToken", data);
@@ -61,7 +62,7 @@ const MatchMentor = (props) => {
       })
     );
   }
-  async function LogOut() {
+  async function logOut() {
     const token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/logout", {
       method: "DELETE",
@@ -77,7 +78,7 @@ const MatchMentor = (props) => {
       })
     );
   }
-  async function Member2() {
+  async function member2() {
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -89,16 +90,13 @@ const MatchMentor = (props) => {
       })
     );
   }
-  function Match(e) {
-    let age;
-    let state;
-    let keyword;
+  function match(e) {
     let users = [];
     const form = e.target;
     const formData = new FormData(form);
-    age = formData.get("Age");
-    state = formData.get("state");
-    keyword = formData.get("interest");
+    const age = formData.get("Age");
+    const state = formData.get("state");
+    const keyword = formData.get("interest");
     fetch(`http://localhost:3000/match/${age}/${state}/${keyword}:`, {
       method: "GET",
       headers: {
@@ -112,9 +110,9 @@ const MatchMentor = (props) => {
   }
 
   useEffect(() => {
-    Auth();
+    auth();
     if (user && func === false) {
-      Member2();
+      member2();
       setFunc(true);
     }
   }, [user, mentors]);
@@ -123,7 +121,7 @@ const MatchMentor = (props) => {
       {info && <NavBar info={info} />}
       <h1>Mentor Matching Search</h1>
       <div className="container">
-        <Form onSubmit={Match}>
+        <Form onSubmit={match}>
           <FormField>
             <label>Age</label>
             <select name="Age" placeholder="Age" min="18" required>
