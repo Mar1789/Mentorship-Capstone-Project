@@ -18,7 +18,6 @@ app.listen(PORT, () => {
   console.log(`Server is Running: ${PORT}`);
 });
 app.delete("/likes/:id", async (req, res) => {
-  // Delete likes from a post
   const postId = parseInt(req.params.id);
   const UserId = parseInt(req.body.userId);
   const count = await prisma.like.count({
@@ -40,9 +39,8 @@ app.delete("/likes/:id", async (req, res) => {
   }
 });
 app.delete("/follow/:id", async (req, res) => {
-  // Removes following
-  const userId = parseInt(req.params.id); // user to follow
-  const followerId = parseInt(req.body.followId); // user who wants to follow
+  const userId = parseInt(req.params.id); 
+  const followerId = parseInt(req.body.followId);
   const count = await prisma.follow.count({
     where: {
       followerId: followerId,
@@ -63,14 +61,11 @@ app.delete("/follow/:id", async (req, res) => {
 });
 
 app.post("/likes/:id", async (req, res) => {
-  // Add like to a post
   const postId = parseInt(req.params.id);
   const UserId = parseInt(req.body.userId);
   const count = await prisma.like.count({
     where: {
-      Post_id: {
-        equals: postId,
-      },
+      Post_id: postId,
       userId: UserId,
     },
   });
@@ -87,9 +82,8 @@ app.post("/likes/:id", async (req, res) => {
   }
 });
 app.post("/follow/:id", async (req, res) => {
-  // Follow a user
-  const userId = parseInt(req.params.id); // user to follow
-  const followerId = parseInt(req.body.followId); // user who wants to follow
+  const userId = parseInt(req.params.id);
+  const followerId = parseInt(req.body.followId);
   const count = await prisma.follow.count({
     where: {
       followerId: followerId,
@@ -109,21 +103,17 @@ app.post("/follow/:id", async (req, res) => {
   }
 });
 app.get("/likeUser/:id/:user", async (req, res) => {
-  // Checks if user liked or not when page loads
   const postId = parseInt(req.params.id);
   const UserId = parseInt(req.params.user);
   const count = await prisma.like.count({
     where: {
-      Post_id: {
-        equals: postId,
-      },
+      Post_id: postId,
       userId: UserId,
     },
   });
   res.json(count);
 });
 app.get("/followUser/:follower/:user", async (req, res) => {
-  // Checks if user liked or not when page loads
   const followerId = parseInt(req.params.follower);
   const userId = parseInt(req.params.user);
   const count = await prisma.follow.count({
@@ -135,7 +125,6 @@ app.get("/followUser/:follower/:user", async (req, res) => {
   res.json(count);
 });
 app.get("/likes/:id", async (req, res) => {
-  // Gets likes count for a specific post
   const postId = req.params.id;
   const likes = await prisma.like.count({
     where: {
@@ -145,7 +134,6 @@ app.get("/likes/:id", async (req, res) => {
   res.json(likes);
 });
 app.get("/followers/:id", async (req, res) => {
-  // Gets follow count for a specific post
   const userId = req.params.id;
   const followers = await prisma.follow.count({
     where: {
@@ -156,32 +144,25 @@ app.get("/followers/:id", async (req, res) => {
 });
 
 app.get("/commentcount/:id", async (req, res) => {
-  // Get comment count to display for each post
   const postId = req.params.id;
   const commentCount = await prisma.comments.count({
     where: {
-      Post_id: {
-        equals: parseInt(postId),
-      },
+      Post_id: parseInt(postId)
     },
   });
   res.json(commentCount);
 });
 
 app.get("/posts", async (req, res) => {
-  // Gets posts made by user
   const userId = res.locals.id;
   const posts = await prisma.posts.findMany({
     where: {
-      userId: {
-        equals: userId,
-      },
+      userId: userId
     },
   });
   res.json(posts);
 });
 app.post("/post", async (req, res) => {
-  // Make posts made by user
   const { description, title, id } = req.body;
   const post = await prisma.posts.create({
     data: {
@@ -209,7 +190,6 @@ app.get("/user/:id", async (req, res) => {
 });
 
 app.get("/comments/:id", async (req, res) => {
-  // Get Comments from post
   const PostId = req.params.id;
   const comments = await prisma.comments.findMany({
     where: {
@@ -233,7 +213,6 @@ app.post("/comment/:id", async (req, res) => {
 });
 
 app.get("/commentUser/:id", async (req, res) => {
-  // Gets users for each Post
   const userId = req.params.id;
   const user = await prisma.User.findFirst({
     where: {
@@ -268,7 +247,6 @@ app.post("/register", async (req, res) => {
       }
       bcrypt.hash(password, salt, async (err, hash) => {
         if (err) {
-          // Handle error
           return;
         }
         password = hash;

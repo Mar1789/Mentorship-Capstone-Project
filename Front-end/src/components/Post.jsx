@@ -18,8 +18,6 @@ const Post = (props) => {
   const [commentcount, setcommentcount] = useState(0);
 
   function SetLike() {
-    // userid = User ID of logged in
-    // .id = ID of the post
     fetch(`http://localhost:3000/likeUser/${props.id}/${props.userid}`, {
       method: "GET",
       headers: {

@@ -68,16 +68,13 @@ app.delete("/logout", authenticate, async (req, res) => {
   const userId = res.locals.name;
   const deleteToken = await prisma.token.deleteMany({
     where: {
-      userId: {
-        equals: parseInt(userId),
-      },
+      userId: parseInt(userId)
     },
   });
   res.json(deleteToken);
 });
 
 app.post("/login", async (req, res) => {
-  // Sign in
   const { username, password } = req.body;
   const users = await prisma.User.findFirst({
     where: {
