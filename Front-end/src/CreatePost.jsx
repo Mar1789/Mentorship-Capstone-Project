@@ -13,8 +13,9 @@ const CreatePost = () => {
   const [user, setUser] = useState();
   const [info, setInfo] = useState("");
   const [func, setFunc] = useState(false);
+  const invalid = "Invalid Token";
 
-  async function LogOut() {
+  async function logOut() {
     const token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/logout", {
       method: "DELETE",
@@ -31,14 +32,12 @@ const CreatePost = () => {
     );
   }
 
-  function HandleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
-    let title;
-    let text;
     const form = e.target.form;
     const formData = new FormData(form);
-    title = formData.get("title");
-    text = formData.get("description");
+    const title = formData.get("title");
+    const text = formData.get("description");
     Auth();
     fetch("http://localhost:3000/post", {
       method: "POST",
@@ -53,7 +52,7 @@ const CreatePost = () => {
       })
     );
   }
-  async function Auth() {
+  async function auth() {
     let token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/auth", {
       method: "GET",
@@ -63,7 +62,7 @@ const CreatePost = () => {
       },
     }).then((data) =>
       data.json().then((data) => {
-        if (data === "Invalid Token") {
+        if (data === invalid) {
           token = localStorage.getItem("refreshToken");
           fetch("http://localhost:4000/token", {
             method: "POST",
@@ -73,7 +72,7 @@ const CreatePost = () => {
             body: JSON.stringify({ token: token }),
           }).then((data) =>
             data.json().then((data) => {
-              if (data === "Invalid Token") {
+              if (data === invalid) {
                 window.location.href = "/";
               } else {
                 localStorage.setItem("accessToken", data);
@@ -86,7 +85,7 @@ const CreatePost = () => {
       })
     );
   }
-  async function Member2() {
+  async function member2() {
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -99,9 +98,9 @@ const CreatePost = () => {
     );
   }
   useEffect(() => {
-    Auth();
+    auth();
     if (user && func === false) {
-      Member2();
+      member2();
       setFunc(true);
     }
   }, [user, info]);
@@ -116,7 +115,7 @@ const CreatePost = () => {
             <Nav>
               <button
                 className="post"
-                onClick={HandleSubmit}
+                onClick={handleSubmit}
                 form="Create-Post"
               >
                 Submit post
@@ -128,7 +127,7 @@ const CreatePost = () => {
                 title={info.FirstName + " " + info.LastName}
                 id="collapsible-nav-dropdown"
               >
-                <NavDropdown.Item onClick={LogOut}>Sign Out</NavDropdown.Item>
+                <NavDropdown.Item onClick={logOut}>Sign Out</NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.1">Settings</NavDropdown.Item>
               </NavDropdown>
             </Nav>

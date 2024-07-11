@@ -22,6 +22,7 @@ model User {
   Like        Like[]
   Posts       Posts[]
   Token       Token[]
+  Follow      Follow[]
 }
 
 model Token {
@@ -60,4 +61,11 @@ model Comments {
   comment    String
   Posts      Posts    @relation(fields: [Post_id], references: [Post_id])
   User       User     @relation(fields: [userId], references: [id])
+}
+
+model Follow {
+  follow_id  Int  @id @default(autoincrement())
+  followerId Int  // The id of the person following user (userId)
+  userId     Int
+  User       User @relation(fields: [userId], references: [id])
 }

@@ -16,7 +16,7 @@ const Comments = (props) => {
   const [date, setDate] = useState();
   const [comment, setComment] = useState([]);
 
-  function CommentAuthors() {
+  function commentAuthors() {
     fetch(`http://localhost:3000/commentUser/${props.author}`, {
       method: "GET",
       headers: {
@@ -29,8 +29,8 @@ const Comments = (props) => {
     );
   }
   useEffect(() => {
-    CommentAuthors();
-    let dates = new Date(props.created).toLocaleDateString();
+    commentAuthors();
+    const dates = new Date(props.created).toLocaleDateString();
     setDate(moment(new Date(dates)).format("MMMM D, Y"));
   }, []);
 

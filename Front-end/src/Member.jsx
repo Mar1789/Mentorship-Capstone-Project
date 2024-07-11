@@ -15,7 +15,7 @@ const Member = () => {
   const [posts, setPosts] = useState([]);
   const [func, setFunc] = useState(false);
 
-  async function Auth() {
+  async function auth() {
     let token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/auth", {
       method: "GET",
@@ -35,7 +35,7 @@ const Member = () => {
             body: JSON.stringify({ token: token }),
           }).then((data) =>
             data.json().then((data) => {
-              if (data === "Invalid Token") {
+              if (data === "Invalid Token" || data === "FAILED") {
                 window.location.href = "/";
               } else {
                 localStorage.setItem("accessToken", data);
@@ -48,7 +48,7 @@ const Member = () => {
       })
     );
   }
-  async function LogOut() {
+  async function logOut() {
     const token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/logout", {
       method: "DELETE",
@@ -65,7 +65,7 @@ const Member = () => {
     );
   }
 
-  async function Member2() {
+  async function member2() {
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -77,7 +77,7 @@ const Member = () => {
       })
     );
   }
-  async function Posts() {
+  async function getPosts() {
     await fetch("http://localhost:3000/posts", {
       method: "GET",
       headers: {
@@ -90,17 +90,39 @@ const Member = () => {
     );
   }
   useEffect(() => {
-    Auth();
+    auth();
     if (user && func === false) {
-      Member2();
+      member2();
       setFunc(true);
     }
-    Posts();
+    getPosts();
   }, [user, info]);
 
   return (
     <>
-      {info && <NavBar info={info} />}
+      <Navbar expand="lg" className="bg-body-tertiary" fixed="top">
+        <Container>
+          <Navbar.Brand href="/">PioneerPath</Navbar.Brand>
+          <Navbar.Toggle />
+          <Navbar.Collapse className="justify-content-end">
+            <Nav>
+              <Nav.Link className="link" href="/create-post">
+                Create a Post
+              </Nav.Link>
+              <Nav.Link className="link" href="#link">
+                Articles
+              </Nav.Link>
+              <NavDropdown
+                title={info.FirstName + " " + info.LastName}
+                id="collapsible-nav-dropdown"
+              >
+                <NavDropdown.Item>Settings</NavDropdown.Item>
+                <NavDropdown.Item onClick={logOut}>Sign Out</NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
       {info && (
         <h1 className="welcome">
           Welcome: {info.FirstName + " " + info.LastName}

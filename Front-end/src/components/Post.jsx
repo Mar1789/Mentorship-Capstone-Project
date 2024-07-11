@@ -15,11 +15,9 @@ const Post = (props) => {
   const [like, setLike] = useState("");
   const [seeLess, setSeeLess] = useState(false);
   const [likecount, setLikecount] = useState(0);
-  const [commentcount, setcommentcount] = useState(0);
+  const [commentcount, setCommentcount] = useState(0);
 
-  function SetLike() {
-    // userid = User ID of logged in
-    // .id = ID of the post
+  function setLikes() {
     fetch(`http://localhost:3000/likeUser/${props.id}/${props.userid}`, {
       method: "GET",
       headers: {
@@ -32,11 +30,11 @@ const Post = (props) => {
         } else {
           setLike("heart");
         }
-        GetLikes();
+        getLikes();
       })
     );
   }
-  function GetLikes() {
+  function getLikes() {
     fetch(`http://localhost:3000/likes/${props.id}`, {
       method: "GET",
       headers: {
@@ -48,7 +46,7 @@ const Post = (props) => {
       })
     );
   }
-  function Author() {
+  function author() {
     fetch(`http://localhost:3000/commentUser/${props.author}`, {
       method: "GET",
       headers: {
@@ -91,10 +89,9 @@ const Post = (props) => {
 
   function handleComment(e) {
     e.preventDefault();
-    let comment;
     const form = e.target;
     const formData = new FormData(form);
-    comment = formData.get("comment-response");
+    const comment = formData.get("comment-response");
     fetch(`http://localhost:3000/comment/${props.id}`, {
       method: "POST",
       headers: {
@@ -103,14 +100,14 @@ const Post = (props) => {
       body: JSON.stringify({ userId: props.userid, comment: comment }),
     }).then((data) =>
       data.json().then((data) => {
-        GetComments();
-        CommentCount();
+        getComments();
+        commentCount();
         e.target.reset();
       })
     );
   }
 
-  function GetComments() {
+  function getComments() {
     fetch(`http://localhost:3000/comments/${props.id}`, {
       method: "GET",
       headers: {
@@ -122,7 +119,7 @@ const Post = (props) => {
       })
     );
   }
-  function CommentCount() {
+  function commentCount() {
     fetch(`http://localhost:3000/commentcount/${props.id}`, {
       method: "GET",
       headers: {
@@ -130,25 +127,25 @@ const Post = (props) => {
       },
     }).then((data) =>
       data.json().then((data) => {
-        setcommentcount(data);
+        setCommentcount(data);
       })
     );
   }
 
   useEffect(() => {
-    SetLike();
-    Author();
+    setLikes();
+    author();
     setText(props.text);
     setLogo(props.text);
-    CommentCount();
+    commentCount();
     if (logo.length > 164) {
       setLogo(logo.substring(0, 164) + "...");
       setSeeLess(false);
     } else {
       setSeeLess(true);
     }
-    GetComments();
-    let dates = new Date(props.date).toLocaleDateString();
+    getComments();
+    const dates = new Date(props.date).toLocaleDateString();
     setDate(moment(new Date(dates)).format("MMMM D, Y"));
   }, [logo, like]);
   return (
