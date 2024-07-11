@@ -21,9 +21,13 @@ const Profile = (props) => {
   const [user, setUser] = useState();
   const [info, setInfo] = useState("");
   const [profile, setProfile] = useState();
+  const [followers, setFollowers] = useState();
+  const [isFollowing, setIsFollowing] = useState(false);
+  const follow = "Follow";
+  const followed = "Unfollow";
   const [func, setFunc] = useState(false);
 
-  async function Auth() {
+  async function auth() {
     let token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/auth", {
       method: "GET",
@@ -56,7 +60,7 @@ const Profile = (props) => {
       })
     );
   }
-  async function LogOut() {
+  async function logOut() {
     const token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/logout", {
       method: "DELETE",
@@ -72,7 +76,7 @@ const Profile = (props) => {
       })
     );
   }
-  async function Member2() {
+  async function member2() {
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -84,7 +88,7 @@ const Profile = (props) => {
       })
     );
   }
-  async function UProfile() {
+  async function uProfile() {
     await fetch(`http://localhost:3000/user/${props.name}`, {
       method: "GET",
       headers: {
@@ -92,25 +96,86 @@ const Profile = (props) => {
       },
     }).then((data) =>
       data.json().then((data) => {
-        let dates = new Date(data.date).toLocaleDateString();
+        const dates = new Date(data.date).toLocaleDateString();
         setDate(moment(new Date(dates)).format("MMMM D, Y"));
         setProfile(data);
       })
     );
   }
+  function getFollowers() {
+    fetch(`http://localhost:3000/followers/${profile.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "Application/json",
+      },
+    }).then((data) =>
+      data.json().then((data) => {
+        setFollowers(data);
+      })
+    );
+  }
+  function setFollow() {
+    fetch(`http://localhost:3000/followUser/${user.id}/${profile.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "Application/json",
+      },
+    }).then((data) =>
+      data.json().then((data) => {
+        if (data === 0) {
+          setIsFollowing(false);
+        } else {
+          setIsFollowing(true);
+        }
+      })
+    );
+  }
+  function handleFollow() {
+    if (isFollowing === false) {
+      fetch(`http://localhost:3000/follow/${profile.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+        body: JSON.stringify({ followId: user.id }),
+      }).then((data) =>
+        data.json().then((data) => {
+          setIsFollowing(true);
+        })
+      );
+    } else {
+      fetch(`http://localhost:3000/follow/${profile.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+        body: JSON.stringify({ followId: user.id }),
+      }).then((data) =>
+        data.json().then((data) => {
+          setIsFollowing(false)
+        })
+      );
+    }
+  }
 
   useEffect(() => {
-    Auth();
-    if (user && func === false) {
-      Member2();
-      UProfile();
-      setFunc(true);
+    auth();
+  }, []);
+  useEffect(() => {
+    if (user) {
+      member2();
     }
-  }, [user]);
+    uProfile();
+    if (profile && user) {
+      setFollow();
+      getFollowers();
+    }
+    setFunc(true);
+  }, [user, isFollowing, followers]);
 
   return (
     <>
-      {info && <NavBar info={info} />}
+      <NavBar info={info} />
       <div className="profile-card">
         {profile && date && (
           <Card>
@@ -127,9 +192,10 @@ const Profile = (props) => {
             <CardContent extra>
               <a>
                 <Icon name="user" />
-                22 Followers
+                {followers} Followers
               </a>
             </CardContent>
+            {profile && user && profile.id !== user.id && <button onClick={handleFollow}>{isFollowing ? followed : follow}</button>}
           </Card>
         )}
       </div>

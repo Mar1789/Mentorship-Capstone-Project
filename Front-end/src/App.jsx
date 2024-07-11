@@ -11,8 +11,8 @@ import MatchMentor from "./MatchMentor";
 
 function App() {
   const [users, setUsers] = useState([]);
-  function GetUsers() {
-    fetch("http://localhost:3000/users", {
+  async function getUsers() {
+    await fetch("http://localhost:3000/users", {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -24,7 +24,7 @@ function App() {
     );
   }
   useEffect(() => {
-    GetUsers();
+    getUsers();
   }, []);
   return (
     <BrowserRouter>

@@ -36,7 +36,7 @@ const Home = () => {
     setShow(true);
     setLogin(true);
   }
-  function Register() {
+  function register() {
     if (login === true) {
       setLogin(false);
       return;
@@ -49,14 +49,12 @@ const Home = () => {
       handleRegister(e);
       return;
     }
-    let username;
-    let password;
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
     if (login === true) {
-      username = formData.get("username");
-      password = formData.get("password");
+      const username = formData.get("username");
+      const password = formData.get("password");
       fetch("http://localhost:4000/login", {
         method: "POST",
         headers: {
@@ -80,27 +78,18 @@ const Home = () => {
       );
     }
     function handleRegister(e) {
-      let username;
-      let password;
-      let cpassword; // Comparison password
-      let FirstName;
-      let LastName;
-      let Role;
-      let Headline;
-      let Age;
-      let State;
       const form = e.target;
       const formData = new FormData(form);
-      username = formData.get("username");
-      password = formData.get("password");
-      cpassword = formData.get("confirm-password");
-      FirstName = formData.get("FirstName");
-      LastName = formData.get("LastName");
-      Headline = formData.get("Headline");
-      Role = e.target.querySelector("span.text").textContent;
-      Age = formData.get("Age");
-      State = formData.get("state");
-      if (isNaN(parseInt(Age))) {
+      const username = formData.get("username");
+      const password = formData.get("password");
+      const cpassword = formData.get("confirm-password");
+      const firstName = formData.get("FirstName");
+      const lastName = formData.get("LastName");
+      const headline = formData.get("Headline");
+      const role = e.target.querySelector("span.text").textContent;
+      const age = formData.get("Age");
+      const state = formData.get("state");
+      if (isNaN(parseInt(age))) {
         return setUserError("Age must be a valid number!");
       }
       if (password !== cpassword) {
@@ -114,12 +103,12 @@ const Home = () => {
         body: JSON.stringify({
           username: username,
           password: password,
-          FirstName: FirstName,
-          LastName: LastName,
-          Headline: Headline,
-          accountType: Role,
-          age: Age,
-          state: State,
+          FirstName: firstName,
+          LastName: lastName,
+          Headline: headline,
+          accountType: role,
+          age: age,
+          state: state,
         }),
       }).then((data) =>
         data.json().then((data) => {
@@ -312,7 +301,7 @@ const Home = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={Register}>
+          <Button variant="primary" onClick={register}>
             {login
               ? "Don't have an account? Register here!"
               : "Already have an account? Sign In"}
