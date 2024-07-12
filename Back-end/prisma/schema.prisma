@@ -23,6 +23,7 @@ model User {
   Posts       Posts[]
   Token       Token[]
   Follow      Follow[]
+  Coord       Coord[]
 }
 
 model Token {
@@ -65,7 +66,15 @@ model Comments {
 
 model Follow {
   follow_id  Int  @id @default(autoincrement())
-  followerId Int  // The id of the person following user (userId)
+  followerId Int 
   userId     Int
   User       User @relation(fields: [userId], references: [id])
+}
+
+model Coord {
+  coordId   Int  @id @default(autoincrement())
+  userId    Int
+  latitude  Float
+  longitude Float
+  User      User @relation(fields: [userId], references: [id])
 }
