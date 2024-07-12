@@ -267,7 +267,32 @@ app.post("/register", async (req, res) => {
     });
   }
 });
+app.get("/coordinates", async (req, res) => {
+  const { userId } = req.body;
+  const coords = await prisma.coord.findMany({
+    where: {
+      userId: parseInt(userId),
+    },
+  });
+  res.json(coords);
+});
 
+app.post("/coordinates", async (req, res) => {
+  const { userId, longitude, latitude } = req.body;
+  const removedCoords = await prisma.coord.deleteMany({
+    where: {
+      userId: parseInt(userId),
+    },
+  });
+  const coordinates = await prisma.coord.create({
+    data: {
+      userId: parseInt(userId),
+      longitude: parseFloat(longitude),
+      latitude: parseFloat(latitude),
+    },
+  });
+  res.json(coordinates);
+});
 app.get("/match/:age/:state/:keyword", async (req, res) => {
   let users = [];
   let matches = [];
