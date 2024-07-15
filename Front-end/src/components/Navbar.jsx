@@ -32,6 +32,9 @@ const NavBar = (props) => {
             <Nav.Link className="link" href="/match-mentor">
               Match with a Mentor
             </Nav.Link>
+            <Nav.Link className="link" href="/meetup">
+              In-Person Meet-up
+            </Nav.Link>
             <Nav.Link className="link" href="/create-post">
               Create a Post
             </Nav.Link>
