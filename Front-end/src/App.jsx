@@ -9,6 +9,7 @@ import CreatePost from "./CreatePost";
 import Profile from "./Profile";
 import MatchMentor from "./MatchMentor";
 import Meetup from "./Meetup";
+import Settings from "./Settings";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -33,7 +34,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/member" element={<Member />} />
         <Route path="/create-post" element={<CreatePost />} />
-        <Route path="/settings" element={<CreatePost />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/match-mentor" element={<MatchMentor />} />
         <Route path="/meetup" element={<Meetup />} />
         {users.map((user) => (
