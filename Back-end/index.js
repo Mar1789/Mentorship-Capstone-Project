@@ -179,6 +179,23 @@ app.get("/users", async (req, res) => {
   res.json(user);
 });
 
+app.put("/user", async(req, res) => {
+  const {userId, firstName, lastName, headline, role, age, state } = req.body;
+  const updateUser = await prisma.User.update({
+    where: {
+      id: parseInt(userId)
+    },
+    data : {
+      FirstName: firstName,
+      LastName: lastName,
+      Headline: headline,
+      accountType: role,
+      age: parseInt(age),
+      state: state,
+    }
+  })
+  res.json(updateUser);
+})
 app.get("/mentors", async (req, res) => {
   const mentors = await prisma.User.findMany({
     where: {
