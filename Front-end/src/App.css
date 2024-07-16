@@ -155,3 +155,16 @@ h1 {
   text-wrap: wrap;
   color: red;
 }
+
+.settings-form {
+  width: 25vw;
+}
+
+.settings {
+  width: 100vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  gap: 20px;
+}

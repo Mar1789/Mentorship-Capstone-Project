@@ -46,7 +46,7 @@ const NavBar = (props) => {
                 title={props.info.FirstName + " " + props.info.LastName}
                 id="collapsible-nav-dropdown"
               >
-                <NavDropdown.Item>Settings</NavDropdown.Item>
+                <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
                 <NavDropdown.Item onClick={LogOut}>Sign Out</NavDropdown.Item>
               </NavDropdown>
             )}
