@@ -179,6 +179,15 @@ app.get("/users", async (req, res) => {
   res.json(user);
 });
 
+app.get("/mentors", async (req, res) => {
+  const mentors = await prisma.User.findMany({
+    where: {
+      accountType: "Mentor",
+    },
+  });
+  res.json(mentors);
+});
+
 app.get("/user/:id", async (req, res) => {
   const userId = req.params.id;
   const user = await prisma.User.findFirst({
@@ -267,14 +276,23 @@ app.post("/register", async (req, res) => {
     });
   }
 });
-app.get("/coordinates", async (req, res) => {
-  const { userId } = req.body;
-  const coords = await prisma.coord.findMany({
+app.get("/coordinates/:id", async (req, res) => {
+  const userId  = req.params.id;
+  const count = await prisma.coord.count({
     where: {
       userId: parseInt(userId),
     },
   });
-  res.json(coords);
+  if(count != 0) {
+    const coords = await prisma.coord.findMany({
+      where: {
+        userId: parseInt(userId),
+      },
+    });
+    res.json(coords);
+  } else {
+    res.json("User has has not shared their location!")
+  }
 });
 
 app.post("/coordinates", async (req, res) => {
