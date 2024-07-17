@@ -149,6 +149,7 @@ const Meetup = () => {
               "Middlepoint between you and the mentor is in a body of water. Please look into meeting through zoom"
             );
             setPlaceId("");
+            setCafes([]);
           } else {
             fetch(
               `https://api.geoapify.com/v1/geocode/reverse?lat=${middleLatitude}&lon=${middleLongitude}&format=json&apiKey=${
