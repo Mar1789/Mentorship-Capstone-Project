@@ -178,15 +178,13 @@ app.get("/article/:articleId", async (req, res) => {
   const articleId = req.params.articleId;
   const article = await prisma.articles.findUnique({
     where: {
-      articleId: articleId
-    }
-  })
-  console.log(articleId);
-  res.json(article)
-})
-app.get("/articles", async (req, res) => {
-  const articles = await prisma.articles.findMany({
+      articleId: articleId,
+    },
   });
+  res.json(article);
+});
+app.get("/articles", async (req, res) => {
+  const articles = await prisma.articles.findMany({});
   res.json(articles);
 });
 
