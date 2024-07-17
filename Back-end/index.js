@@ -174,14 +174,32 @@ app.post("/post", async (req, res) => {
   res.json(post);
 });
 
-app.get("/articles", async (req, res) => {
-  const userId = req.body.userId;
-  const posts = await prisma.articles.findMany({
+app.get("/article/:articleId", async (req, res) => {
+  const articleId = req.params.articleId;
+  const article = await prisma.articles.findUnique({
     where: {
-      userId: parseInt(userId),
+      articleId: articleId
+    }
+  })
+  console.log(articleId);
+  res.json(article)
+})
+app.get("/articles", async (req, res) => {
+  const articles = await prisma.articles.findMany({
+  });
+  res.json(articles);
+});
+
+app.get("/articles/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const articles = await prisma.articles.findMany({
+    where: {
+      NOT: {
+        userId: parseInt(userId),
+      },
     },
   });
-  res.json(posts);
+  res.json(articles);
 });
 
 app.post("/article", async (req, res) => {
