@@ -2,7 +2,6 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-// import Logo from "../../public/Logo.png"
 
 const NavBar = (props) => {
   async function LogOut() {
@@ -38,7 +37,10 @@ const NavBar = (props) => {
             <Nav.Link className="link" href="/create-post">
               Create a Post
             </Nav.Link>
-            <Nav.Link className="link" href="#link">
+            <Nav.Link className="link" href="/member">
+              See Posts
+            </Nav.Link>
+            <Nav.Link className="link" href="/articles">
               Articles
             </Nav.Link>
             {props.info && (

@@ -75,8 +75,11 @@ h1 {
   width: 914px;
 }
 .post-center {
+  flex-direction: column;
   display: flex;
   justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .margin {
@@ -167,4 +170,11 @@ h1 {
   justify-content: center;
   text-align: center;
   gap: 20px;
+}
+
+.article-style {
+  width: 893px;
+  margin-left: 32px;
+  margin-top: 30px;
+  text-align: left;
 }
