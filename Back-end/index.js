@@ -163,10 +163,32 @@ app.get("/posts", async (req, res) => {
   res.json(posts);
 });
 app.post("/post", async (req, res) => {
-  const { description, title, id } = req.body;
+  const { description, title, userId } = req.body;
   const post = await prisma.posts.create({
     data: {
-      userId: id,
+      userId: userId,
+      description: description,
+      title: title,
+    },
+  });
+  res.json(post);
+});
+
+app.get("/articles", async (req, res) => {
+  const userId = req.body.userId;
+  const posts = await prisma.articles.findMany({
+    where: {
+      userId: parseInt(userId),
+    },
+  });
+  res.json(posts);
+});
+
+app.post("/article", async (req, res) => {
+  const { description, title, userId } = req.body;
+  const post = await prisma.articles.create({
+    data: {
+      userId: parseInt(userId),
       description: description,
       title: title,
     },
@@ -179,23 +201,23 @@ app.get("/users", async (req, res) => {
   res.json(user);
 });
 
-app.put("/user", async(req, res) => {
-  const {userId, firstName, lastName, headline, role, age, state } = req.body;
+app.put("/user", async (req, res) => {
+  const { userId, firstName, lastName, headline, role, age, state } = req.body;
   const updateUser = await prisma.User.update({
     where: {
-      id: parseInt(userId)
+      id: parseInt(userId),
     },
-    data : {
+    data: {
       FirstName: firstName,
       LastName: lastName,
       Headline: headline,
       accountType: role,
       age: parseInt(age),
       state: state,
-    }
-  })
+    },
+  });
   res.json(updateUser);
-})
+});
 app.get("/mentors", async (req, res) => {
   const mentors = await prisma.User.findMany({
     where: {
@@ -294,13 +316,13 @@ app.post("/register", async (req, res) => {
   }
 });
 app.get("/coordinates/:id", async (req, res) => {
-  const userId  = req.params.id;
+  const userId = req.params.id;
   const count = await prisma.coord.count({
     where: {
       userId: parseInt(userId),
     },
   });
-  if(count != 0) {
+  if (count != 0) {
     const coords = await prisma.coord.findMany({
       where: {
         userId: parseInt(userId),
@@ -308,7 +330,7 @@ app.get("/coordinates/:id", async (req, res) => {
     });
     res.json(coords);
   } else {
-    res.json("User has has not shared their location!")
+    res.json("User has has not shared their location!");
   }
 });
 
@@ -328,6 +350,7 @@ app.post("/coordinates", async (req, res) => {
   });
   res.json(coordinates);
 });
+
 app.get("/match/:age/:state/:keyword", async (req, res) => {
   let users = [];
   let matches = [];
