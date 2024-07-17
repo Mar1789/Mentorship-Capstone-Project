@@ -112,12 +112,8 @@ const Post = (props) => {
       headers: {
         "Content-Type": "Application/json",
       },
-      body: JSON.stringify({ Post_id: props.id })
-    }).then((data) =>
-      data.json().then((data) => {
-
-      })
-    );
+      body: JSON.stringify({ Post_id: props.id }),
+    }).then((data) => data.json().then((data) => {}));
   }
 
   function getComments() {
