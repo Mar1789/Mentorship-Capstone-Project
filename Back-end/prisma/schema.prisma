@@ -24,6 +24,7 @@ model User {
   Token       Token[]
   Follow      Follow[]
   Coord       Coord[]
+  Aritcles    Articles[]
 }
 
 model Token {
@@ -46,6 +47,15 @@ model Posts {
   User        User       @relation(fields: [userId], references: [id])
 }
 
+model Articles {
+  articleId   Int      @id @default(autoincrement())
+  userId      Int
+  createdAt   DateTime @default(now())
+  description String
+  title       String
+  User        User     @relation(fields: [userId], references: [id])
+}
+
 model Like {
   like_id Int   @id @default(autoincrement())
   Post_id Int
@@ -66,15 +76,15 @@ model Comments {
 
 model Follow {
   follow_id  Int  @id @default(autoincrement())
-  followerId Int 
+  followerId Int
   userId     Int
   User       User @relation(fields: [userId], references: [id])
 }
 
 model Coord {
-  coordId   Int  @id @default(autoincrement())
+  coordId   Int   @id @default(autoincrement())
   userId    Int
   latitude  Float
   longitude Float
-  User      User @relation(fields: [userId], references: [id])
+  User      User  @relation(fields: [userId], references: [id])
 }
