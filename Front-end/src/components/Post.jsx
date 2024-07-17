@@ -3,7 +3,7 @@ import "./Post.css";
 import "semantic-ui-css/semantic.min.css";
 
 import moment from "moment";
-import { Icon, CommentGroup, Form } from "semantic-ui-react";
+import { Button, Icon, CommentGroup, Form } from "semantic-ui-react";
 import Comment from "./sub-component/Comment";
 
 const Post = (props) => {
@@ -106,6 +106,19 @@ const Post = (props) => {
       })
     );
   }
+  function deletePost() {
+    fetch(`http://localhost:3000/post`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "Application/json",
+      },
+      body: JSON.stringify({ Post_id: props.id })
+    }).then((data) =>
+      data.json().then((data) => {
+
+      })
+    );
+  }
 
   function getComments() {
     fetch(`http://localhost:3000/comments/${props.id}`, {
@@ -184,6 +197,11 @@ const Post = (props) => {
           <Icon onClick={handleLike} className="like" name={like}>
             {likecount}
           </Icon>
+          {user.id === props.userid && (
+            <Button icon className="delete" color="red" onClick={deletePost}>
+              <Icon name="trash alternate"></Icon>
+            </Button>
+          )}
         </footer>
         <hr />
       </div>
