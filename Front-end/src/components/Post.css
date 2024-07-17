@@ -84,3 +84,9 @@ footer {
 .logo {
   width: 26px;
 }
+
+.delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+}

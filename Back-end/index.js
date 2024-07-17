@@ -154,13 +154,31 @@ app.get("/commentcount/:id", async (req, res) => {
 });
 
 app.get("/posts", async (req, res) => {
-  const userId = res.locals.id;
   const posts = await prisma.posts.findMany({
-    where: {
-      userId: userId,
+    orderBy: {
+      Post_id: "asc",
     },
   });
   res.json(posts);
+});
+app.delete("/post", async (req, res) => {
+  const Post_id = parseInt(req.body.Post_id);
+  const comments = await prisma.comments.deleteMany({
+    where: {
+      Post_id: Post_id,
+    },
+  });
+  const likes = await prisma.like.deleteMany({
+    where: {
+      Post_id: Post_id,
+    },
+  });
+  const post = await prisma.posts.deleteMany({
+    where: {
+      Post_id: Post_id,
+    },
+  });
+  res.json(post);
 });
 app.post("/post", async (req, res) => {
   const { description, title, userId } = req.body;
