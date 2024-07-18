@@ -62,23 +62,8 @@ const MatchMentor = (props) => {
       })
     );
   }
-  async function logOut() {
-    const token = localStorage.getItem("accessToken");
-    await fetch("http://localhost:4000/logout", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "Application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }).then((data) =>
-      data.json().then((data) => {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        window.location.href = "/";
-      })
-    );
-  }
-  async function member2() {
+
+  async function getInfo() {
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -112,7 +97,7 @@ const MatchMentor = (props) => {
   useEffect(() => {
     auth();
     if (user && func === false) {
-      member2();
+      getInfo();
       setFunc(true);
     }
   }, [user, mentors]);

@@ -76,7 +76,7 @@ const Profile = (props) => {
       })
     );
   }
-  async function member2() {
+  async function getInfo() {
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -163,7 +163,7 @@ const Profile = (props) => {
   }, []);
   useEffect(() => {
     if (user) {
-      member2();
+      getInfo();
     }
     uProfile();
     if (profile && user) {

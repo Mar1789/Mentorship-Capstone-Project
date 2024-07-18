@@ -132,6 +132,8 @@ const Meetup = () => {
       alert(
         "You are both too far from each other! Please set up a time to meet through zoom"
       );
+      setPlaceId("");
+      setCafes([]);
     } else {
       fetch(
         `https://isitwater-com.p.rapidapi.com/?latitude=${middleLatitude}&longitude=${middleLongitude}`,

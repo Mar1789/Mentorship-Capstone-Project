@@ -65,7 +65,7 @@ const Member = () => {
     );
   }
 
-  async function member2() {
+  async function getInfo() {
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -92,7 +92,7 @@ const Member = () => {
   useEffect(() => {
     auth();
     if (user && func === false) {
-      member2();
+      getInfo();
       setFunc(true);
     }
     getPosts();
