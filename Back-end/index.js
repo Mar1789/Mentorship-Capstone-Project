@@ -7,6 +7,8 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const similarity = require("similarity");
 const app = express();
+const geolib = require("geolib");
+const { defineDmmfProperty } = require("@prisma/client/runtime/library");
 
 const saltRounds = 11;
 let salt;
@@ -385,29 +387,21 @@ app.post("/coordinates", async (req, res) => {
   res.json(coordinates);
 });
 
-app.get("/match/:age/:state/:keyword", async (req, res) => {
+app.get("/match/:userId/:age/:keyword", async (req, res) => {
   let users = [];
   let matches = [];
-  let results;
+  let priorityMatch = [];
   let map1 = new Map();
   const senior = "65";
   const age = req.params.age,
-    state = req.params.state,
-    keyword = req.params.keyword;
-  const data = await prisma.User.findMany({
+    keyword = req.params.keyword,
+    userId = req.params.userId;
+  const mentors = await prisma.User.findMany({
     where: {
       accountType: "Mentor",
     },
   });
-
-  data.map((user) => {
-    if (user.state === state) {
-      users.push(user);
-    }
-  });
-  if (users.length === 0) {
-    users = data;
-  }
+  users = mentors;
   if (age.charAt(2) === "-") {
     users.map((user) => {
       if (user.age >= age.substring(0, 2) && user.age <= age.substring(3, 5)) {
@@ -424,14 +418,90 @@ app.get("/match/:age/:state/:keyword", async (req, res) => {
   if (matches.length === 0) {
     matches = users;
   }
-  matches.map((user) => {
-    results = similarity(keyword, user.Headline);
-    if (results > 0.1) {
-      map1.set(results, user);
+  const studentCoords = await getCoords(userId);
+  await Promise.all(
+    matches.map(async (user) => {
+      const coordinates = await getCoords(user.id);
+      if (similarity(keyword, user.Headline) > 0.1) {
+        let likecount = 0;
+        const posts = await prisma.posts.findMany({
+          where: {
+            userId: user.id,
+          },
+        });
+        for (const n in posts) {
+          const likes = await prisma.like.findMany({
+            where: {
+              Post_id: posts[n].Post_id,
+              userId: parseInt(userId),
+            },
+          });
+          likecount += likes.length;
+        }
+        if (coordinates.length == 1 && studentCoords.length == 1) {
+          if (studentCoords.length == 1) {
+            let distance = geolib.getDistance(
+              {
+                latitude: studentCoords[0].latitude,
+                longitude: studentCoords[0].longitude,
+              },
+              {
+                latitude: coordinates[0].latitude,
+                longitude: coordinates[0].longitude,
+              }
+            );
+            distance *= 0.000621371192;
+            priorityMatch.push({
+              id: user.id,
+              similarityScore: similarity(keyword, user.Headline),
+              distance: distance,
+              like: likecount,
+            });
+          }
+        } else {
+          priorityMatch.push({
+            id: user.id,
+            similarityScore: similarity(keyword, user.Headline),
+            distance: 10000,
+            like: likecount,
+          });
+        }
+      }
+    })
+  );
+  const distanceMin = Math.min(...priorityMatch.map((item) => item.distance));
+  const distanceMax = Math.max(...priorityMatch.map((item) => item.distance));
+  const likeMin = Math.min(...priorityMatch.map((item) => item.like));
+  const likeMax = Math.max(...priorityMatch.map((item) => item.like));
+  priorityMatch.map((user) => {
+    let normLike;
+    let normDistance;
+    if (likeMin == likeMax) {
+      normLike = 0;
+    } else {
+      normLike = (user.like - likeMin) / (likeMax - likeMin);
     }
+    normDistance =
+      1 - (user.distance - distanceMin) / (distanceMax - distanceMin);
+    const score =
+      (user.similarityScore * 0.8) + (normLike * 0.1) + (normDistance * 0.1);
+    map1.set(score, user.id);
   });
   map1 = new Map([...map1.entries()].sort());
-  users = Array.from(map1.values());
-  users = users.sort().reverse();
-  res.json(users);
+  users = Array.from(map1.values()).reverse();
+  const user = await prisma.user.findFirst({
+    where: {
+      id: users[0],
+    },
+  });
+  res.json([user]);
 });
+
+async function getCoords(userId) {
+  const coords = await prisma.coord.findMany({
+    where: {
+      userId: parseInt(userId),
+    },
+  });
+  return coords;
+}
