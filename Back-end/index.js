@@ -484,7 +484,7 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
     normDistance =
       1 - (user.distance - distanceMin) / (distanceMax - distanceMin);
     const score =
-      (user.similarityScore * 0.8) + (normLike * 0.1) + (normDistance * 0.1);
+      user.similarityScore * 0.8 + normLike * 0.1 + normDistance * 0.1;
     map1.set(score, user.id);
   });
   map1 = new Map([...map1.entries()].sort());
