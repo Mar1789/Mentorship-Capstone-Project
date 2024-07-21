@@ -439,25 +439,23 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
           likecount += likes.length;
         }
         if (coordinates.length == 1 && studentCoords.length == 1) {
-          if (studentCoords.length == 1) {
-            let distance = geolib.getDistance(
-              {
-                latitude: studentCoords[0].latitude,
-                longitude: studentCoords[0].longitude,
-              },
-              {
-                latitude: coordinates[0].latitude,
-                longitude: coordinates[0].longitude,
-              }
-            );
-            distance *= 0.000621371192;
-            priorityMatch.push({
-              id: user.id,
-              similarityScore: similarity(keyword, user.Headline),
-              distance: distance,
-              like: likecount,
-            });
-          }
+          let distance = geolib.getDistance(
+            {
+              latitude: studentCoords[0].latitude,
+              longitude: studentCoords[0].longitude,
+            },
+            {
+              latitude: coordinates[0].latitude,
+              longitude: coordinates[0].longitude,
+            }
+          );
+          distance *= 0.000621371192;
+          priorityMatch.push({
+            id: user.id,
+            similarityScore: similarity(keyword, user.Headline),
+            distance: distance,
+            like: likecount,
+          });
         } else {
           priorityMatch.push({
             id: user.id,
