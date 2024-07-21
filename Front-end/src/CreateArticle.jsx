@@ -56,7 +56,6 @@ const CreateArticle = () => {
     );
   }
 
-
   async function auth() {
     let token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/auth", {
@@ -104,6 +103,8 @@ const CreateArticle = () => {
   }
   useEffect(() => {
     auth();
+  }, []);
+  useEffect(() => {
     if (user) {
       getInfo();
     }

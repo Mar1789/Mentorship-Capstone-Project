@@ -55,7 +55,7 @@ const CreatePost = () => {
       })
     );
   }
-  async function LogOut() {
+  async function logOut() {
     const token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/logout", {
       method: "DELETE",
@@ -119,6 +119,8 @@ const CreatePost = () => {
   }
   useEffect(() => {
     auth();
+  }, []);
+  useEffect(() => {
     if (user) {
       getInfo();
     }
@@ -160,7 +162,7 @@ const CreatePost = () => {
                   id="collapsible-nav-dropdown"
                 >
                   <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
-                  <NavDropdown.Item onClick={LogOut}>Sign Out</NavDropdown.Item>
+                  <NavDropdown.Item onClick={logOut}>Sign Out</NavDropdown.Item>
                 </NavDropdown>
               )}
             </Nav>

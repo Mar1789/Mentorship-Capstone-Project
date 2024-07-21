@@ -73,6 +73,8 @@ const Article = (props) => {
   }
   useEffect(() => {
     auth();
+  }, []);
+  useEffect(() => {
     if (user) {
       getInfo();
     }

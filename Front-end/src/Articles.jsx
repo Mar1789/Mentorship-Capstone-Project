@@ -73,6 +73,8 @@ const Articles = () => {
   }
   useEffect(() => {
     auth();
+  }, []);
+  useEffect(() => {
     if (user) {
       getInfo();
     }
@@ -80,7 +82,11 @@ const Articles = () => {
       getArticles();
     }
   }, [user]);
-
+  useEffect(() => {
+    if (info) {
+      getArticles();
+    }
+  }, [info]);
   return (
     <>
       <Navbar info={info} />
