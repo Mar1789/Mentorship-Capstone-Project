@@ -29,6 +29,7 @@ import "./App.css";
 const Home = () => {
   const [show, setShow] = useState(false);
   const [login, setLogin] = useState(true);
+  const invalid = "Invalid Token";
   const [userError, setUserError] = useState("");
 
   const handleClose = () => setShow(false);
@@ -36,6 +37,40 @@ const Home = () => {
     setShow(true);
     setLogin(true);
   }
+
+  async function auth() {
+    let token = localStorage.getItem("accessToken");
+    await fetch("http://localhost:4000/auth", {
+      method: "GET",
+      headers: {
+        "Content-Type": "Application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((data) =>
+      data.json().then((data) => {
+        if (data === invalid) {
+          token = localStorage.getItem("refreshToken");
+          fetch("http://localhost:4000/token", {
+            method: "POST",
+            headers: {
+              "Content-Type": "Application/json",
+            },
+            body: JSON.stringify({ token: token }),
+          }).then((data) =>
+            data.json().then((data) => {
+              if (data !== invalid) {
+                localStorage.setItem("accessToken", data);
+                console.log("JIDOSJCJ");
+              }
+            })
+          );
+        } else {
+          window.location.href = "/member";
+        }
+      })
+    );
+  }
+
   function register() {
     if (login === true) {
       setLogin(false);
@@ -142,6 +177,9 @@ const Home = () => {
     "https://mae.ufl.edu/wp-content/uploads/2020/07/group-1024x682.jpg",
     "https://shpeuf.s3.amazonaws.com/public/home/home-2.jpg",
   ];
+  useState(() => {
+    auth();
+  }, []);
   return (
     <>
       <header>

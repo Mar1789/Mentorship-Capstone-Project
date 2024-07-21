@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
-import "bootstrap/dist/css/bootstrap.min.css";
 import "semantic-ui-css/semantic.min.css";
 
 import moment from "moment";
@@ -25,7 +24,6 @@ const Profile = (props) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const follow = "Follow";
   const followed = "Unfollow";
-  const [func, setFunc] = useState(false);
 
   async function auth() {
     let token = localStorage.getItem("accessToken");
@@ -60,22 +58,7 @@ const Profile = (props) => {
       })
     );
   }
-  async function logOut() {
-    const token = localStorage.getItem("accessToken");
-    await fetch("http://localhost:4000/logout", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "Application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }).then((data) =>
-      data.json().then((data) => {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        window.location.href = "/";
-      })
-    );
-  }
+
   async function getInfo() {
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
@@ -88,7 +71,7 @@ const Profile = (props) => {
       })
     );
   }
-  async function uProfile() {
+  async function userProfile() {
     await fetch(`http://localhost:3000/user/${props.name}`, {
       method: "GET",
       headers: {
@@ -152,7 +135,7 @@ const Profile = (props) => {
         body: JSON.stringify({ followId: user.id }),
       }).then((data) =>
         data.json().then((data) => {
-          setIsFollowing(false)
+          setIsFollowing(false);
         })
       );
     }
@@ -160,18 +143,17 @@ const Profile = (props) => {
 
   useEffect(() => {
     auth();
+    userProfile();
   }, []);
   useEffect(() => {
     if (user) {
       getInfo();
     }
-    uProfile();
     if (profile && user) {
       setFollow();
       getFollowers();
     }
-    setFunc(true);
-  }, [user, isFollowing, followers]);
+  }, [user, isFollowing, followers, profile]);
 
   return (
     <>
@@ -195,7 +177,11 @@ const Profile = (props) => {
                 {followers} Followers
               </a>
             </CardContent>
-            {profile && user && profile.id !== user.id && <button onClick={handleFollow}>{isFollowing ? followed : follow}</button>}
+            {profile && user && profile.id !== user.id && (
+              <button onClick={handleFollow}>
+                {isFollowing ? followed : follow}
+              </button>
+            )}
           </Card>
         )}
       </div>

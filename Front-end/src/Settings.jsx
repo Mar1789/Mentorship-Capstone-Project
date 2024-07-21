@@ -103,10 +103,12 @@ const Settings = () => {
   }
   useEffect(() => {
     auth();
+  }, []);
+  useEffect(() => {
     if (user) {
       userInfo();
     }
-  }, [user]);
+  }, [user, info]);
   return (
     <>
       <NavBar info={info} />
