@@ -1,4 +1,6 @@
 import {
+  Dimmer,
+  Loader,
   CardMeta,
   CardHeader,
   CardContent,
@@ -33,8 +35,10 @@ const Meetup = () => {
   const [zoom, setZoom] = useState(false);
   const [placeId, setPlaceId] = useState("");
   const [cafes, setCafes] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function auth() {
+    setIsLoading(true);
     let token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/auth", {
       method: "GET",
@@ -63,11 +67,13 @@ const Meetup = () => {
           );
         } else {
           setUser(data);
+          setIsLoading(false);
         }
       })
     );
   }
   async function getInfo() {
+    setIsLoading(true);
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -76,35 +82,40 @@ const Meetup = () => {
     }).then((data) =>
       data.json().then((data) => {
         setInfo(data);
+        setIsLoading(false);
       })
     );
   }
-  function coordinates(position) {
+  async function coordinates(position) {
     setLatitude(position.coords.latitude);
     setLongitude(position.coords.longitude);
+    setIsLoading(true);
     {
-      latitude &&
-        longitude &&
-        info &&
+      info &&
         fetch("http://localhost:3000/coordinates", {
           method: "POST",
           headers: {
             "Content-Type": "Application/json",
           },
           body: JSON.stringify({
-            longitude: longitude,
-            latitude: latitude,
-            userId: 26,
+            longitude: position.coords.longitude,
+            latitude: position.coords.latitude,
+            userId: info.id,
           }),
-        }).then((data) => data.json().then((data) => {}));
+        }).then((data) =>
+          data.json().then((data) => {
+            setIsLoading(false);
+          })
+        );
     }
   }
   function err() {
     alert("err");
   }
-  function getCoords(e) {
+  async function getCoords(e) {
     const userId = e.target.id;
-    fetch(`http://localhost:3000/coordinates/${userId}`, {
+    setIsLoading(true);
+    await fetch(`http://localhost:3000/coordinates/${userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -118,6 +129,7 @@ const Meetup = () => {
           setMentorLongitude(data[0].longitude);
           setMiddlepoint(true);
           setZoom(true);
+          setIsLoading(false);
         }
       })
     );
@@ -128,12 +140,14 @@ const Meetup = () => {
     const middleLongitude = (longitude + mentorLongitude) / 2;
     const middleLatitude = (latitude + mentorLatitude) / 2;
     const distance = length1.distanceTo(length2) * 0.000621371;
+    setIsLoading(true);
     if (distance > 30) {
       alert(
         "You are both too far from each other! Please set up a time to meet through zoom"
       );
       setPlaceId("");
       setCafes([]);
+      setIsLoading(false);
     } else {
       fetch(
         `https://isitwater-com.p.rapidapi.com/?latitude=${middleLatitude}&longitude=${middleLongitude}`,
@@ -166,6 +180,7 @@ const Meetup = () => {
             ).then((location) =>
               location.json().then((location) => {
                 setPlaceId(location.results[0].place_id);
+                setIsLoading(false);
               })
             );
           }
@@ -175,6 +190,7 @@ const Meetup = () => {
   }
 
   function findCafe() {
+    setIsLoading(true);
     fetch(
       `https://api.geoapify.com/v2/places?categories=catering.cafe&filter=place:${placeId}&limit=20&apiKey=${
         import.meta.env.VITE_GEOAPIFYKEY
@@ -188,11 +204,13 @@ const Meetup = () => {
     ).then((data) =>
       data.json().then((data) => {
         setCafes(data.features);
+        setIsLoading(false);
       })
     );
   }
 
   function getMentors() {
+    setIsLoading(true);
     fetch(`http://localhost:3000/mentors`, {
       method: "GET",
       headers: {
@@ -201,6 +219,7 @@ const Meetup = () => {
     }).then((data) =>
       data.json().then((data) => {
         setMentors(data);
+        setIsLoading(false);
       })
     );
   }
@@ -212,15 +231,22 @@ const Meetup = () => {
 
   useEffect(() => {
     auth();
+  }, []);
+  useEffect(() => {
     if (user) {
       getMentors();
       getInfo();
+    }
+  }, [user]);
+  useEffect(() => {
+    if (info) {
       const location = navigator.geolocation.getCurrentPosition(
         coordinates,
         err
       );
+      setIsLoading(true);
     }
-  }, [user]);
+  }, [info]);
   useEffect(() => {
     if (mentorLatitude && mentorLongitude && zoom) {
       distance();
@@ -237,6 +263,9 @@ const Meetup = () => {
     <>
       {info && <NavBar info={info} />}
       <h1>Mentor Meetup</h1>
+      <Dimmer active={isLoading} inverted>
+        <Loader inverted content="Loading" />
+      </Dimmer>
       <div className="meetup-container">
         {latitude && longitude && (
           <MapContainer

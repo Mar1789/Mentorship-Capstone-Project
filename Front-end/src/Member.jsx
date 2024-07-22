@@ -7,15 +7,17 @@ import "semantic-ui-css/semantic.min.css";
 import Navbar from "./components/Navbar";
 import Post from "./components/Post";
 
-import { GridRow, GridColumn, Grid } from "semantic-ui-react";
+import { Dimmer, Loader, GridRow, GridColumn, Grid } from "semantic-ui-react";
 
 const Member = () => {
   const [user, setUser] = useState();
   const [info, setInfo] = useState("");
   const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function auth() {
     let token = localStorage.getItem("accessToken");
+    setIsLoading(true);
     await fetch("http://localhost:4000/auth", {
       method: "GET",
       headers: {
@@ -43,12 +45,14 @@ const Member = () => {
           );
         } else {
           setUser(data);
+          setIsLoading(false);
         }
       })
     );
   }
 
   async function getInfo() {
+    setIsLoading(true);
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -57,10 +61,12 @@ const Member = () => {
     }).then((data) =>
       data.json().then((data) => {
         setInfo(data);
+        setIsLoading(false);
       })
     );
   }
   async function getPosts() {
+    setIsLoading(true);
     await fetch("http://localhost:3000/posts", {
       method: "GET",
       headers: {
@@ -69,6 +75,7 @@ const Member = () => {
     }).then((data) =>
       data.json().then((data) => {
         setPosts(data);
+        setIsLoading(false);
       })
     );
   }
@@ -76,11 +83,12 @@ const Member = () => {
     auth();
   }, []);
   useEffect(() => {
+    setIsLoading(true);
     if (user) {
       getInfo();
       getPosts();
     }
-  }, [user, posts]);
+  }, [user]);
   return (
     <>
       <Navbar info={info} />
@@ -90,6 +98,9 @@ const Member = () => {
         </h1>
       )}
       <div className="post-center">
+        <Dimmer active={isLoading} inverted>
+          <Loader inverted content="Loading" />
+        </Dimmer>
         <Grid divided="vertically" className="sizing">
           {info &&
             posts.map((post) => (
@@ -102,6 +113,7 @@ const Member = () => {
                     date={post.createdAt}
                     text={post.description}
                     title={post.title}
+                    fetch={getPosts}
                   />
                 </GridColumn>
               </GridRow>

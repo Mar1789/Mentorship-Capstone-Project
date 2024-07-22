@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "semantic-ui-css/semantic.min.css";
 
 import Container from "react-bootstrap/Container";
+import { Dimmer, Loader } from "semantic-ui-react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
@@ -12,26 +13,11 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 const CreatePost = () => {
   const [user, setUser] = useState();
   const [info, setInfo] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const invalid = "Invalid Token";
 
-  async function logOut() {
-    const token = localStorage.getItem("accessToken");
-    await fetch("http://localhost:4000/logout", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "Application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }).then((data) =>
-      data.json().then((data) => {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        window.location.href = "/";
-      })
-    );
-  }
-
   function handleSubmit(e) {
+    setIsLoading(true);
     e.preventDefault();
     const form = e.target.form;
     const formData = new FormData(form);
@@ -51,12 +37,14 @@ const CreatePost = () => {
     }).then((data) =>
       data.json().then((data) => {
         e.target.form.reset();
+        setIsLoading(false);
         window.location.href = "/member";
       })
     );
   }
   async function logOut() {
     const token = localStorage.getItem("accessToken");
+    setIsLoading(true);
     await fetch("http://localhost:4000/logout", {
       method: "DELETE",
       headers: {
@@ -65,6 +53,7 @@ const CreatePost = () => {
       },
     }).then((data) =>
       data.json().then((data) => {
+        setIsLoading(false);
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         window.location.href = "/";
@@ -73,6 +62,7 @@ const CreatePost = () => {
   }
 
   async function auth() {
+    setIsLoading(true);
     let token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/auth", {
       method: "GET",
@@ -101,11 +91,13 @@ const CreatePost = () => {
           );
         } else {
           setUser(data);
+          setIsLoading(false);
         }
       })
     );
   }
   async function getInfo() {
+    setIsLoading(true);
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -114,6 +106,7 @@ const CreatePost = () => {
     }).then((data) =>
       data.json().then((data) => {
         setInfo(data);
+        setIsLoading(false);
       })
     );
   }
@@ -169,6 +162,9 @@ const CreatePost = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+      <Dimmer active={isLoading} inverted>
+        <Loader inverted content="Loading" />
+      </Dimmer>
       <form id="Create-Post">
         <h1>Make a post</h1>
         <br />

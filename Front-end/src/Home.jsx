@@ -11,6 +11,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import Companies from "../public/Big_Five_Tech_companies.png";
 
 import { Slide } from "react-slideshow-image";
+import { Dimmer, Loader, Image, Segment } from "semantic-ui-react";
 
 import {
   FormField,
@@ -30,6 +31,8 @@ const Home = () => {
   const [show, setShow] = useState(false);
   const [login, setLogin] = useState(true);
   const invalid = "Invalid Token";
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageLoad, setPageLoad] = useState(false);
   const [userError, setUserError] = useState("");
 
   const handleClose = () => setShow(false);
@@ -39,6 +42,7 @@ const Home = () => {
   }
 
   async function auth() {
+    setPageLoad(true);
     let token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/auth", {
       method: "GET",
@@ -59,12 +63,13 @@ const Home = () => {
           }).then((data) =>
             data.json().then((data) => {
               if (data !== invalid) {
+                setPageLoad(false);
                 localStorage.setItem("accessToken", data);
-                console.log("JIDOSJCJ");
               }
             })
           );
         } else {
+          setPageLoad(false);
           window.location.href = "/member";
         }
       })
@@ -80,6 +85,7 @@ const Home = () => {
     }
   }
   function handleLogin(e) {
+    setIsLoading(true);
     if (login === false) {
       handleRegister(e);
       return;
@@ -104,6 +110,7 @@ const Home = () => {
             localStorage.setItem("accessToken", data.accessToken);
             localStorage.setItem("refreshToken", data.refreshToken);
             setUserError("");
+            setIsLoading(false);
             handleClose();
             window.location.href = "/member";
           } else {
@@ -113,6 +120,7 @@ const Home = () => {
       );
     }
     function handleRegister(e) {
+      setIsLoading(true);
       const form = e.target;
       const formData = new FormData(form);
       const username = formData.get("username");
@@ -153,6 +161,7 @@ const Home = () => {
             setUserError("");
             setLogin(true);
             e.target.reset();
+            setIsLoading(false);
           }
         })
       );
@@ -182,16 +191,15 @@ const Home = () => {
   }, []);
   return (
     <>
+      <Dimmer active={pageLoad} inverted>
+        <Loader inverted content="Loading" />
+      </Dimmer>
       <header>
         <Navbar expand="lg" className="bg-body-tertiary" fixed="top">
           <Container>
             <Navbar.Brand href="/">PioneerPath</Navbar.Brand>
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
-              <Nav>
-                <Nav.Link href="#home">Our Mission</Nav.Link>
-                <Nav.Link href="#link">Articles</Nav.Link>
-              </Nav>
               <Navbar.Text onClick={handleShow}>Log In</Navbar.Text>
             </Navbar.Collapse>
           </Container>
@@ -230,6 +238,9 @@ const Home = () => {
       </div>
 
       <Modal show={show} onHide={handleClose}>
+        <Dimmer active={isLoading} inverted>
+          <Loader inverted content="Loading" />
+        </Dimmer>
         <Modal.Header closeButton>
           <Modal.Title>{login ? "Login" : "Register"} </Modal.Title>
         </Modal.Header>

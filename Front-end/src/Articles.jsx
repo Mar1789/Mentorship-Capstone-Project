@@ -6,12 +6,13 @@ import "semantic-ui-css/semantic.min.css";
 
 import Navbar from "./components/Navbar";
 import ArticleComponent from "./components/ArticleComponent";
-import { Grid } from "semantic-ui-react";
+import { Dimmer, Loader, Grid } from "semantic-ui-react";
 
 const Articles = () => {
   const [user, setUser] = useState();
   const [info, setInfo] = useState("");
   const [articles, setArticles] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function auth() {
     let token = localStorage.getItem("accessToken");
@@ -60,6 +61,7 @@ const Articles = () => {
     );
   }
   async function getArticles() {
+    setIsLoading(true);
     await fetch(`http://localhost:3000/articles/${info.id}`, {
       method: "GET",
       headers: {
@@ -68,6 +70,7 @@ const Articles = () => {
     }).then((data) =>
       data.json().then((data) => {
         setArticles(data);
+        setIsLoading(false);
       })
     );
   }
@@ -78,9 +81,6 @@ const Articles = () => {
     if (user) {
       getInfo();
     }
-    if (info) {
-      getArticles();
-    }
   }, [user]);
   useEffect(() => {
     if (info) {
@@ -89,6 +89,9 @@ const Articles = () => {
   }, [info]);
   return (
     <>
+      <Dimmer active={isLoading} inverted>
+        <Loader inverted content="Loading" />
+      </Dimmer>
       <Navbar info={info} />
       {info && <h1 className="welcome">Articles:</h1>}
       <button onClick={() => (window.location.href = "/create-article")}>

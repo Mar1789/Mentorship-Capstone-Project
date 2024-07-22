@@ -5,6 +5,8 @@ import "semantic-ui-css/semantic.min.css";
 
 import NavBar from "./components/Navbar";
 import {
+  Dimmer,
+  Loader,
   CardMeta,
   CardHeader,
   CardDescription,
@@ -20,8 +22,10 @@ const Settings = () => {
   const [user, setUser] = useState();
   const [info, setInfo] = useState("");
   const [userError, setUserError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   async function auth() {
+    setIsLoading(true);
     let token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/auth", {
       method: "GET",
@@ -50,12 +54,14 @@ const Settings = () => {
           );
         } else {
           setUser(data);
+          setIsLoading(false);
         }
       })
     );
   }
 
   async function userInfo() {
+    setIsLoading(true);
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -64,6 +70,7 @@ const Settings = () => {
     }).then((data) =>
       data.json().then((data) => {
         setInfo(data);
+        setIsLoading(false);
       })
     );
   }
@@ -77,7 +84,9 @@ const Settings = () => {
     const role = formData.get("role");
     const age = formData.get("Age");
     const state = formData.get("state");
+    setIsLoading(true);
     if (isNaN(parseInt(age))) {
+      setIsLoading(true);
       return setUserError("Age must be a valid number!");
     }
     fetch(`http://localhost:3000/user`, {
@@ -97,6 +106,8 @@ const Settings = () => {
     }).then((data) =>
       data.json().then((data) => {
         setUserError("");
+        setIsLoading(false);
+        userInfo();
         e.target.reset();
       })
     );
@@ -108,11 +119,14 @@ const Settings = () => {
     if (user) {
       userInfo();
     }
-  }, [user, info]);
+  }, [user]);
   return (
     <>
       <NavBar info={info} />
       <h1>Settings</h1>
+      <Dimmer active={isLoading} inverted>
+        <Loader inverted content="Loading" />
+      </Dimmer>
       <div className="settings">
         {info && (
           <Card className="settings-card">

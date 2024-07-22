@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./Post.css";
 import "semantic-ui-css/semantic.min.css";
+import { Dimmer, Loader } from "semantic-ui-react";
 
 import moment from "moment";
 
@@ -9,8 +10,10 @@ const ArticleComponent = (props) => {
   const [date, setDate] = useState("");
   const [user, setUser] = useState([]);
   const [text, setText] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   function author() {
+    setIsLoading(true);
     fetch(`http://localhost:3000/commentUser/${props.author}`, {
       method: "GET",
       headers: {
@@ -19,6 +22,7 @@ const ArticleComponent = (props) => {
     }).then((data) =>
       data.json().then((data) => {
         setUser(data);
+        setIsLoading(false);
       })
     );
   }
@@ -40,6 +44,9 @@ const ArticleComponent = (props) => {
   }, [logo]);
   return (
     <>
+      <Dimmer active={isLoading} inverted>
+        <Loader inverted content="Loading" />
+      </Dimmer>
       <div
         className="post-border"
         onClick={() => (window.location.href = `/article-${props.id}`)}

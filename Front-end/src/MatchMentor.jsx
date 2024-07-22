@@ -5,6 +5,8 @@ import "semantic-ui-css/semantic.min.css";
 
 import NavBar from "./components/Navbar";
 import {
+  Dimmer,
+  Loader,
   Form,
   FormField,
   CardMeta,
@@ -21,9 +23,11 @@ const MatchMentor = (props) => {
   const [user, setUser] = useState();
   const [info, setInfo] = useState("");
   const [mentors, setMentors] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const invalid = "Invalid Token";
 
   async function auth() {
+    setIsLoading(true);
     let token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/auth", {
       method: "GET",
@@ -51,6 +55,7 @@ const MatchMentor = (props) => {
             })
           );
         } else {
+          setIsLoading(false);
           setUser(data);
         }
       })
@@ -58,6 +63,7 @@ const MatchMentor = (props) => {
   }
 
   async function getInfo() {
+    setIsLoading(true);
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -66,10 +72,12 @@ const MatchMentor = (props) => {
     }).then((data) =>
       data.json().then((data) => {
         setInfo(data);
+        setIsLoading(false);
       })
     );
   }
   function match(e) {
+    setIsLoading(true);
     const form = e.target;
     const formData = new FormData(form);
     const age = formData.get("Age");
@@ -81,6 +89,7 @@ const MatchMentor = (props) => {
       },
     }).then((data) =>
       data.json().then((data) => {
+        setIsLoading(false);
         setMentors(data);
       })
     );
@@ -97,6 +106,9 @@ const MatchMentor = (props) => {
     <>
       {info && <NavBar info={info} />}
       <h1>Mentor Matching Search</h1>
+      <Dimmer active={isLoading} inverted>
+        <Loader inverted content="Loading" />
+      </Dimmer>
       <div className="container">
         {info && (
           <Form onSubmit={match}>
