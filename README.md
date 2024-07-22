@@ -19,6 +19,6 @@ https://github.com/user-attachments/assets/dfd9a384-d96b-427c-ac93-24683b4b5400
 Week 7/Week 3 Capstone Project Update
 
 https://github.com/user-attachments/assets/994f7ae5-90b5-4a68-b00a-8a02c5f0b8a1
-
 Article feature implementation
+
 ![article](https://github.com/user-attachments/assets/5715df65-2541-43c1-b3d4-ab14c1cb846d)
