@@ -3,7 +3,14 @@ import "./Post.css";
 import "semantic-ui-css/semantic.min.css";
 
 import moment from "moment";
-import { Button, Icon, CommentGroup, Form } from "semantic-ui-react";
+import {
+  Dimmer,
+  Loader,
+  Button,
+  Icon,
+  CommentGroup,
+  Form,
+} from "semantic-ui-react";
 import Comment from "./sub-component/Comment";
 
 const Post = (props) => {
@@ -16,8 +23,10 @@ const Post = (props) => {
   const [seeLess, setSeeLess] = useState(false);
   const [likecount, setLikecount] = useState(0);
   const [commentcount, setCommentcount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   function setLikes() {
+    setIsLoading(true);
     fetch(`http://localhost:3000/likeUser/${props.id}/${props.userid}`, {
       method: "GET",
       headers: {
@@ -31,10 +40,12 @@ const Post = (props) => {
           setLike("heart");
         }
         getLikes();
+        setIsLoading(false);
       })
     );
   }
   function getLikes() {
+    setIsLoading(true);
     fetch(`http://localhost:3000/likes/${props.id}`, {
       method: "GET",
       headers: {
@@ -43,10 +54,12 @@ const Post = (props) => {
     }).then((data) =>
       data.json().then((data) => {
         setLikecount(data);
+        setIsLoading(false);
       })
     );
   }
   function author() {
+    setIsLoading(true);
     fetch(`http://localhost:3000/commentUser/${props.author}`, {
       method: "GET",
       headers: {
@@ -55,11 +68,13 @@ const Post = (props) => {
     }).then((data) =>
       data.json().then((data) => {
         setUser(data);
+        setIsLoading(false);
       })
     );
   }
 
   function handleLike() {
+    setIsLoading(true);
     if (like === "heart outline") {
       fetch(`http://localhost:3000/likes/${props.id}`, {
         method: "POST",
@@ -70,6 +85,7 @@ const Post = (props) => {
       }).then((data) =>
         data.json().then((data) => {
           setLike("heart");
+          setIsLoading(false);
         })
       );
     } else {
@@ -82,12 +98,14 @@ const Post = (props) => {
       }).then((data) =>
         data.json().then((data) => {
           setLike("heart outline");
+          setIsLoading(false);
         })
       );
     }
   }
 
   function handleComment(e) {
+    setIsLoading(true);
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
@@ -102,21 +120,29 @@ const Post = (props) => {
       data.json().then((data) => {
         getComments();
         commentCount();
+        setIsLoading(false);
         e.target.reset();
       })
     );
   }
   function deletePost() {
+    setIsLoading(true);
     fetch(`http://localhost:3000/post`, {
       method: "DELETE",
       headers: {
         "Content-Type": "Application/json",
       },
       body: JSON.stringify({ Post_id: props.id }),
-    }).then((data) => data.json().then((data) => {}));
+    }).then((data) =>
+      data.json().then((data) => {
+        props.fetch("Delete Post");
+        setIsLoading(false);
+      })
+    );
   }
 
   function getComments() {
+    setIsLoading(true);
     fetch(`http://localhost:3000/comments/${props.id}`, {
       method: "GET",
       headers: {
@@ -125,10 +151,12 @@ const Post = (props) => {
     }).then((data) =>
       data.json().then((data) => {
         setComments(data);
+        setIsLoading(false);
       })
     );
   }
   function commentCount() {
+    setIsLoading(true);
     fetch(`http://localhost:3000/commentcount/${props.id}`, {
       method: "GET",
       headers: {
@@ -137,6 +165,7 @@ const Post = (props) => {
     }).then((data) =>
       data.json().then((data) => {
         setCommentcount(data);
+        setIsLoading(false);
       })
     );
   }
@@ -159,6 +188,9 @@ const Post = (props) => {
   }, [logo, like]);
   return (
     <>
+      <Dimmer active={isLoading} inverted>
+        <Loader inverted content="Loading" />
+      </Dimmer>
       <div className="post-border">
         <div className="profile">
           <img

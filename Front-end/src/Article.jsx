@@ -6,15 +6,17 @@ import "semantic-ui-css/semantic.min.css";
 
 import Navbar from "./components/Navbar";
 import ArticleComponent from "./components/ArticleComponent";
-import { Grid } from "semantic-ui-react";
+import { Dimmer, Loader, Grid } from "semantic-ui-react";
 
 const Article = (props) => {
   const [user, setUser] = useState();
   const [info, setInfo] = useState("");
   const [article, setArticle] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function auth() {
     let token = localStorage.getItem("accessToken");
+    setIsLoading(true);
     await fetch("http://localhost:4000/auth", {
       method: "GET",
       headers: {
@@ -42,12 +44,14 @@ const Article = (props) => {
           );
         } else {
           setUser(data);
+          setIsLoading(false);
         }
       })
     );
   }
 
   async function getInfo() {
+    setIsLoading(true);
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -56,10 +60,12 @@ const Article = (props) => {
     }).then((data) =>
       data.json().then((data) => {
         setInfo(data);
+        setIsLoading(false);
       })
     );
   }
   async function getArticle() {
+    setIsLoading(true);
     await fetch(`http://localhost:3000/article/${props.id}`, {
       method: "GET",
       headers: {
@@ -68,6 +74,7 @@ const Article = (props) => {
     }).then((data) =>
       data.json().then((data) => {
         setArticle(data);
+        setIsLoading(false);
       })
     );
   }
@@ -88,6 +95,9 @@ const Article = (props) => {
       <Navbar info={info} />
       <br />
       <br />
+      <Dimmer active={isLoading} inverted>
+        <Loader inverted content="Loading" />
+      </Dimmer>
       <div className="post-center">
         <Grid>
           {info && (

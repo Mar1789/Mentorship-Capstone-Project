@@ -8,13 +8,17 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import { Dimmer, Loader } from "semantic-ui-react";
 
 const CreateArticle = () => {
   const [user, setUser] = useState();
   const [info, setInfo] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const invalid = "Invalid Token";
 
   async function logOut() {
+    setIsLoading(true);
     const token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/logout", {
       method: "DELETE",
@@ -24,6 +28,7 @@ const CreateArticle = () => {
       },
     }).then((data) =>
       data.json().then((data) => {
+        setIsLoading(false);
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         window.location.href = "/";
@@ -33,6 +38,7 @@ const CreateArticle = () => {
 
   function handleSubmit(e) {
     e.preventDefault();
+    setIsLoading(true);
     const form = e.target.form;
     const formData = new FormData(form);
     const title = formData.get("title");
@@ -50,6 +56,7 @@ const CreateArticle = () => {
       }),
     }).then((data) =>
       data.json().then((data) => {
+        setIsLoading(false);
         e.target.form.reset();
         window.location.href = "/articles";
       })
@@ -57,6 +64,7 @@ const CreateArticle = () => {
   }
 
   async function auth() {
+    setIsLoading(true);
     let token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/auth", {
       method: "GET",
@@ -85,11 +93,13 @@ const CreateArticle = () => {
           );
         } else {
           setUser(data);
+          setIsLoading(false);
         }
       })
     );
   }
   async function getInfo() {
+    setIsLoading(true);
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -98,6 +108,7 @@ const CreateArticle = () => {
     }).then((data) =>
       data.json().then((data) => {
         setInfo(data);
+        setIsLoading(false);
       })
     );
   }
@@ -112,6 +123,9 @@ const CreateArticle = () => {
 
   return (
     <div className="margin">
+      <Dimmer active={isLoading} inverted>
+        <Loader inverted content="Loading" />
+      </Dimmer>
       <Navbar expand="lg" className="bg-body-tertiary" fixed="top">
         <Container>
           <Navbar.Brand href="/">PioneerPath</Navbar.Brand>

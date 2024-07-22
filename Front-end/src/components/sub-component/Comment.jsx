@@ -1,4 +1,6 @@
 import {
+  Dimmer,
+  Loader,
   CommentText,
   Icon,
   CommentMetadata,
@@ -15,8 +17,10 @@ import moment from "moment";
 const Comments = (props) => {
   const [date, setDate] = useState();
   const [comment, setComment] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   function commentAuthors() {
+    setIsLoading(true);
     fetch(`http://localhost:3000/commentUser/${props.author}`, {
       method: "GET",
       headers: {
@@ -25,6 +29,7 @@ const Comments = (props) => {
     }).then((data) =>
       data.json().then((data) => {
         setComment(data);
+        setIsLoading(false);
       })
     );
   }
@@ -35,21 +40,26 @@ const Comments = (props) => {
   }, []);
 
   return (
-    <Comment>
-      <CommentAvatar src="https://react.semantic-ui.com/images/avatar/small/matt.jpg" />
-      <CommentContent>
-        <CommentAuthor
-          as="a"
-          onClick={() => (window.location.href = `/profile-${comment.id}`)}
-        >
-          {comment.FirstName + " " + comment.LastName}
-        </CommentAuthor>
-        <CommentMetadata>
-          <div>{date}</div>
-        </CommentMetadata>
-        <CommentText>{props.comment}</CommentText>
-      </CommentContent>
-    </Comment>
+    <>
+      <Dimmer active={isLoading} inverted>
+        <Loader inverted content="Loading" />
+      </Dimmer>
+      <Comment>
+        <CommentAvatar src="https://react.semantic-ui.com/images/avatar/small/matt.jpg" />
+        <CommentContent>
+          <CommentAuthor
+            as="a"
+            onClick={() => (window.location.href = `/profile-${comment.id}`)}
+          >
+            {comment.FirstName + " " + comment.LastName}
+          </CommentAuthor>
+          <CommentMetadata>
+            <div>{date}</div>
+          </CommentMetadata>
+          <CommentText>{props.comment}</CommentText>
+        </CommentContent>
+      </Comment>
+    </>
   );
 };
 

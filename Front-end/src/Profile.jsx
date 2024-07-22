@@ -7,6 +7,8 @@ import moment from "moment";
 
 import NavBar from "./components/Navbar";
 import {
+  Dimmer,
+  Loader,
   CardMeta,
   CardHeader,
   CardDescription,
@@ -22,10 +24,12 @@ const Profile = (props) => {
   const [profile, setProfile] = useState();
   const [followers, setFollowers] = useState();
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const follow = "Follow";
   const followed = "Unfollow";
 
   async function auth() {
+    setIsLoading(true);
     let token = localStorage.getItem("accessToken");
     await fetch("http://localhost:4000/auth", {
       method: "GET",
@@ -53,6 +57,7 @@ const Profile = (props) => {
             })
           );
         } else {
+          setIsLoading(false);
           setUser(data);
         }
       })
@@ -60,6 +65,7 @@ const Profile = (props) => {
   }
 
   async function getInfo() {
+    setIsLoading(true);
     await fetch(`http://localhost:3000/user/${user.name}`, {
       method: "GET",
       headers: {
@@ -68,10 +74,12 @@ const Profile = (props) => {
     }).then((data) =>
       data.json().then((data) => {
         setInfo(data);
+        setIsLoading(false);
       })
     );
   }
   async function userProfile() {
+    setIsLoading(true);
     await fetch(`http://localhost:3000/user/${props.name}`, {
       method: "GET",
       headers: {
@@ -82,10 +90,12 @@ const Profile = (props) => {
         const dates = new Date(data.date).toLocaleDateString();
         setDate(moment(new Date(dates)).format("MMMM D, Y"));
         setProfile(data);
+        setIsLoading(false);
       })
     );
   }
   function getFollowers() {
+    setIsLoading(true);
     fetch(`http://localhost:3000/followers/${profile.id}`, {
       method: "GET",
       headers: {
@@ -94,10 +104,13 @@ const Profile = (props) => {
     }).then((data) =>
       data.json().then((data) => {
         setFollowers(data);
+        setIsLoading(false);
       })
     );
   }
+
   function setFollow() {
+    setIsLoading(true);
     fetch(`http://localhost:3000/followUser/${user.id}/${profile.id}`, {
       method: "GET",
       headers: {
@@ -110,10 +123,12 @@ const Profile = (props) => {
         } else {
           setIsFollowing(true);
         }
+        setIsLoading(false);
       })
     );
   }
   function handleFollow() {
+    setIsLoading(true);
     if (isFollowing === false) {
       fetch(`http://localhost:3000/follow/${profile.id}`, {
         method: "POST",
@@ -124,6 +139,7 @@ const Profile = (props) => {
       }).then((data) =>
         data.json().then((data) => {
           setIsFollowing(true);
+          setIsLoading(false);
         })
       );
     } else {
@@ -136,6 +152,7 @@ const Profile = (props) => {
       }).then((data) =>
         data.json().then((data) => {
           setIsFollowing(false);
+          setIsLoading(false);
         })
       );
     }
@@ -158,6 +175,9 @@ const Profile = (props) => {
   return (
     <>
       <NavBar info={info} />
+      <Dimmer active={isLoading} inverted>
+        <Loader inverted content="Loading" />
+      </Dimmer>
       <div className="profile-card">
         {profile && date && (
           <Card>
