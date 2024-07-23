@@ -178,3 +178,24 @@ h1 {
   margin-top: 30px;
   text-align: left;
 }
+.resetPassword {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  margin: auto;
+  height: 383px;
+  width: 40%;
+  margin-top: 50px;
+}
+.resetPassword-form{
+  margin: auto;
+  padding: 38px;
+  justify-content: center;
+  text-align: center;
+}
+
+.resetPassword-title {
+  width: auto;
+  margin: auto;
+  margin-top: 20px;
+  padding: 40px;
+}
