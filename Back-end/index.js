@@ -537,8 +537,8 @@ app.delete("/verifyCode/:resetCode", async (req, res) => {
       resetCode: parseInt(resetCode),
     },
   });
+
   if (validateCode !== null && validateCode.length > 0) {
-    console.log(validateCode);
     if (validateCode[0].expiredAt < currentDate) {
       res.json("EXPIRED CODE");
     } else {
