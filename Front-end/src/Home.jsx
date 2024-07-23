@@ -25,7 +25,6 @@ import {
 
 import "react-slideshow-image/dist/styles.css";
 import "./App.css";
-// import "./components/slide.css"
 
 const Home = () => {
   const [show, setShow] = useState(false);
@@ -115,6 +114,7 @@ const Home = () => {
             window.location.href = "/member";
           } else {
             setUserError(data);
+            setIsLoading(false);
           }
         })
       );
@@ -174,7 +174,7 @@ const Home = () => {
 
   const properties = {
     duration: 2000,
-    autoplay: false,
+    autoplay: true,
     transitionDuration: 900,
     arrows: false,
     infinite: true,
@@ -247,8 +247,13 @@ const Home = () => {
         <Modal.Body>
           <Form onSubmit={handleLogin}>
             <FormField>
-              <label>Username</label>
-              <FormInput name="username" placeholder="Username" required />
+              <label>Email</label>
+              <FormInput
+                type="email"
+                name="username"
+                placeholder="Email"
+                required
+              />
             </FormField>
             <FormField>
               <label>Password</label>
@@ -344,6 +349,7 @@ const Home = () => {
             )}
             <Button type="submit">Submit</Button>
           </Form>
+          <a href="/reset-password">Forgot Password?</a>
           {userError && <Message error header={userError} />}
         </Modal.Body>
         <Modal.Footer>

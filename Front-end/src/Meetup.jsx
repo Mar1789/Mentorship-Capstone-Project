@@ -166,6 +166,7 @@ const Meetup = () => {
             );
             setPlaceId("");
             setCafes([]);
+            setIsLoading(true);
           } else {
             fetch(
               `https://api.geoapify.com/v1/geocode/reverse?lat=${middleLatitude}&lon=${middleLongitude}&format=json&apiKey=${

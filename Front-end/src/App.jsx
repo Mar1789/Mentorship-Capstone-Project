@@ -13,6 +13,7 @@ import Settings from "./Settings";
 import Article from "./Article";
 import Articles from "./Articles";
 import CreateArticle from "./CreateArticle";
+import ResetPassword from "./ResetPassword";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -49,6 +50,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/member" element={<Member />} />
         <Route path="/create-post" element={<CreatePost />} />
         <Route path="/create-article" element={<CreateArticle />} />
