@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 const similarity = require("similarity");
 const app = express();
 const geolib = require("geolib");
+const nodemailer = require("nodemailer");
 const { defineDmmfProperty } = require("@prisma/client/runtime/library");
 
 const saltRounds = 11;
@@ -503,3 +504,91 @@ async function getCoords(userId) {
   });
   return coords;
 }
+app.put("/changePassword", async (req, res) => {
+  let { userId, password } = req.body;
+  bcrypt.genSalt(saltRounds, (err, salt) => {
+    if (err) {
+      return;
+    }
+    bcrypt.hash(password, salt, async (err, hash) => {
+      if (err) {
+        return;
+      }
+      password = hash;
+      const account = await prisma.user.update({
+        where: {
+          id: parseInt(userId),
+        },
+        data: {
+          password: password,
+        },
+      });
+      res.json(account);
+    });
+  });
+});
+
+app.delete("/verifyCode/:resetCode", async (req, res) => {
+  const resetCode = req.params.resetCode;
+  const currentDate = new Date();
+  const validateCode = await prisma.verify.findMany({
+    where: {
+      resetCode: parseInt(resetCode),
+    },
+  });
+  if (validateCode !== null) {
+    if (validateCode[0].expiredAt < currentDate) {
+      res.json("EXPIRED CODE");
+    } else {
+      const userId = validateCode[0].userId;
+      const removeCode = await prisma.verify.deleteMany({
+        where: {
+          userId: validateCode[0].userId,
+        },
+      });
+      res.json(userId);
+    }
+  } else {
+    res.json("INVALID CODE");
+  }
+});
+
+app.post("/resetPassword", async (req, res) => {
+  const email = req.body.email;
+  const validateUser = await prisma.user.findFirst({
+    where: {
+      username: email,
+    },
+  });
+  if (validateUser === null) {
+    res.json("Account not found with associated email");
+  } else {
+    const resetCode = Math.floor(100000 + Math.random() * 900000);
+    const userId = validateUser.id;
+    let expiredAt = new Date();
+    expiredAt.setMinutes(expiredAt.getMinutes() + 5);
+    const verifyCode = await prisma.verify.create({
+      data: {
+        resetCode,
+        userId,
+        expiredAt,
+      },
+    });
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+      },
+    });
+    const info = await transporter.sendMail({
+      from: '"Pioneer Path" <burneremailuf@gmail.com>', // sender address
+      to: email,
+      subject: "Reset password ✔",
+      html: `<b>Your reset password code is ${resetCode}</b>`,
+    });
+    res.json(info.messageId);
+  }
+});

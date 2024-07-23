@@ -25,6 +25,7 @@ model User {
   Like        Like[]
   Posts       Posts[]
   Token       Token[]
+  Verify      Verify[]
 }
 
 model Token {
@@ -87,4 +88,12 @@ model Articles {
   description String
   title       String
   User        User     @relation(fields: [userId], references: [id])
+}
+
+model Verify {
+  codeId    String   @id @default(uuid())
+  resetCode Int
+  userId    Int
+  expiredAt DateTime
+  User      User     @relation(fields: [userId], references: [id])
 }
