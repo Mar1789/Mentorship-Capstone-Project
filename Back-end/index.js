@@ -389,7 +389,6 @@ app.post("/coordinates", async (req, res) => {
 });
 
 app.get("/match/:userId/:age/:keyword", async (req, res) => {
-  let users = [];
   let matches = [];
   let priorityMatch = [];
   let map1 = new Map();
@@ -397,13 +396,13 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
   const age = req.params.age,
     keyword = req.params.keyword,
     userId = req.params.userId;
-  const mentors = await prisma.User.findMany({
+  let users = await prisma.User.findMany({
     where: {
       accountType: "Mentor",
     },
   });
-  users = mentors;
   if (age.charAt(2) === "-") {
+    //Filters mentors by the selected age range
     users.map((user) => {
       if (user.age >= age.substring(0, 2) && user.age <= age.substring(3, 5)) {
         matches.push(user);
@@ -417,20 +416,24 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
     });
   }
   if (matches.length === 0) {
+    // If there are no mentors that fall in the age range, include all of them
     matches = users;
   }
-  const studentCoords = await getCoords(userId);
+  // Get student coordinates
+  const studentCoords = await getCoords(userId); 
   await Promise.all(
     matches.map(async (user) => {
       const coordinates = await getCoords(user.id);
       if (similarity(keyword, user.Headline) > 0.1) {
         let likecount = 0;
         const posts = await prisma.posts.findMany({
+          // Fetch all of the posts that the selected mentor has made
           where: {
             userId: user.id,
           },
         });
         for (const n in posts) {
+          // For each post, add the amount of likes the user has done for each post (overall likecount)
           const likes = await prisma.like.findMany({
             where: {
               Post_id: posts[n].Post_id,
@@ -440,6 +443,7 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
           likecount += likes.length;
         }
         if (coordinates.length == 1 && studentCoords.length == 1) {
+          // If the mentor and user coordinates are in the database, calculate the distance
           let distance = geolib.getDistance(
             {
               latitude: studentCoords[0].latitude,
@@ -450,7 +454,8 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
               longitude: coordinates[0].longitude,
             }
           );
-          distance *= 0.000621371192;
+          // Convert the distance from meters to miles
+          distance *= 0.000621371192; 
           priorityMatch.push({
             id: user.id,
             similarityScore: similarity(keyword, user.Headline),
@@ -459,6 +464,7 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
           });
         } else {
           priorityMatch.push({
+            // Make the default distance as 10,000 miles
             id: user.id,
             similarityScore: similarity(keyword, user.Headline),
             distance: 10000,
@@ -468,26 +474,31 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
       }
     })
   );
-  const distanceMin = Math.min(...priorityMatch.map((item) => item.distance));
+  const distanceMin = Math.min(...priorityMatch.map((item) => item.distance)); // Get the minimum and maximum distance out of all of the mentors
   const distanceMax = Math.max(...priorityMatch.map((item) => item.distance));
-  const likeMin = Math.min(...priorityMatch.map((item) => item.like));
+  const likeMin = Math.min(...priorityMatch.map((item) => item.like)); // Get the minimum and maximum likecount
   const likeMax = Math.max(...priorityMatch.map((item) => item.like));
   priorityMatch.map((user) => {
     let normLike;
     let normDistance;
     if (likeMin == likeMax) {
+      // If the likecount of min/max are the same, then the normalized likecount is zero
       normLike = 0;
     } else {
-      normLike = (user.like - likeMin) / (likeMax - likeMin);
+      normLike = (user.like - likeMin) / (likeMax - likeMin); // Normalization formula (value-min)/(max-min)
     }
+    // Normalization formula and taking the inverse since we want the shortest distance
     normDistance =
       1 - (user.distance - distanceMin) / (distanceMax - distanceMin);
+    // Similarity score is 80% weighted, likecount is 10% weighted, and distance is 10% weighted
     const score =
       user.similarityScore * 0.8 + normLike * 0.1 + normDistance * 0.1;
     map1.set(score, user.id);
   });
+  // Order the map by least to greatest average scores
   map1 = new Map([...map1.entries()].sort());
   users = Array.from(map1.values()).reverse();
+  // Fetch the user with the highest average score (always index 0)
   const user = await prisma.user.findFirst({
     where: {
       id: users[0],
