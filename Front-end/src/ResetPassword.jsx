@@ -36,12 +36,13 @@ const ResetPassword = () => {
       data.json().then((data) => {
         if (data === "Account not found with associated email") {
           setUserError(data);
+          setIsLoading(false);
         } else {
           setUserError("");
           setVerify(true);
+          setIsLoading(false);
           e.target.reset();
         }
-        setIsLoading(false);
       })
     );
   }
@@ -117,6 +118,7 @@ const ResetPassword = () => {
                 type="email"
                 name="email"
                 placeholder="Enter your Email Address"
+                required
               ></FormInput>
             </FormField>
             <button>Submit</button>
@@ -134,6 +136,7 @@ const ResetPassword = () => {
                 type="code"
                 name="code"
                 placeholder="Enter your verification code"
+                required
               ></FormInput>
             </FormField>
             <button>Submit</button>
@@ -148,11 +151,13 @@ const ResetPassword = () => {
                 type="password"
                 name="password"
                 placeholder="Enter your password"
+                required
               ></FormInput>
               <FormInput
                 type="password"
                 name="cpassword"
                 placeholder="Confirm your password"
+                required
               ></FormInput>
             </FormField>
             <button>Submit</button>
