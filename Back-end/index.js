@@ -420,58 +420,35 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
     matches = users;
   }
   // Get student coordinates
-  const studentCoords = await getCoords(userId); 
+  const studentCoords = await getCoords(userId);
   await Promise.all(
     matches.map(async (user) => {
+      let distance;
       const coordinates = await getCoords(user.id);
-      if (similarity(keyword, user.Headline) > 0.1) {
-        let likecount = 0;
-        const posts = await prisma.posts.findMany({
-          // Fetch all of the posts that the selected mentor has made
-          where: {
-            userId: user.id,
+      let likecount = await getLikes(user, userId);
+      if (coordinates.length == 1 && studentCoords.length == 1) {
+        // If the mentor and user coordinates are in the database, calculate the distance
+        distance = geolib.getDistance(
+          {
+            latitude: studentCoords[0].latitude,
+            longitude: studentCoords[0].longitude,
           },
-        });
-        for (const n in posts) {
-          // For each post, add the amount of likes the user has done for each post (overall likecount)
-          const likes = await prisma.like.findMany({
-            where: {
-              Post_id: posts[n].Post_id,
-              userId: parseInt(userId),
-            },
-          });
-          likecount += likes.length;
-        }
-        if (coordinates.length == 1 && studentCoords.length == 1) {
-          // If the mentor and user coordinates are in the database, calculate the distance
-          let distance = geolib.getDistance(
-            {
-              latitude: studentCoords[0].latitude,
-              longitude: studentCoords[0].longitude,
-            },
-            {
-              latitude: coordinates[0].latitude,
-              longitude: coordinates[0].longitude,
-            }
-          );
-          // Convert the distance from meters to miles
-          distance *= 0.000621371192; 
-          priorityMatch.push({
-            id: user.id,
-            similarityScore: similarity(keyword, user.Headline),
-            distance: distance,
-            like: likecount,
-          });
-        } else {
-          priorityMatch.push({
-            // Make the default distance as 10,000 miles
-            id: user.id,
-            similarityScore: similarity(keyword, user.Headline),
-            distance: 10000,
-            like: likecount,
-          });
-        }
+          {
+            latitude: coordinates[0].latitude,
+            longitude: coordinates[0].longitude,
+          }
+        );
+        // Convert the distance from meters to miles
+        distance *= 0.000621371192;
+      } else {
+        distance = 10000;
       }
+      priorityMatch.push({
+        id: user.id,
+        similarityScore: similarity(keyword, user.Headline),
+        distance: distance,
+        like: likecount,
+      });
     })
   );
   const distanceMin = Math.min(...priorityMatch.map((item) => item.distance)); // Get the minimum and maximum distance out of all of the mentors
@@ -496,8 +473,7 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
     map1.set(score, user.id);
   });
   // Order the map by least to greatest average scores
-  map1 = new Map([...map1.entries()].sort());
-  users = Array.from(map1.values()).reverse();
+  users = await reverseMap(map1);
   // Fetch the user with the highest average score (always index 0)
   const user = await prisma.user.findFirst({
     where: {
@@ -507,6 +483,11 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
   res.json([user]);
 });
 
+async function reverseMap(map1) {
+  map1 = new Map([...map1.entries()].sort());
+  return Array.from(map1.values()).reverse();
+}
+
 async function getCoords(userId) {
   const coords = await prisma.coord.findMany({
     where: {
@@ -514,6 +495,26 @@ async function getCoords(userId) {
     },
   });
   return coords;
+}
+async function getLikes(user, userId) {
+  let likecount = 0;
+  const posts = await prisma.posts.findMany({
+    // Fetch all of the posts that the selected mentor has made
+    where: {
+      userId: user.id,
+    },
+  });
+  for (const n in posts) {
+    // For each post, add the amount of likes the user has done for each post (overall likecount)
+    const likes = await prisma.like.findMany({
+      where: {
+        Post_id: posts[n].Post_id,
+        userId: parseInt(userId),
+      },
+    });
+    likecount += likes.length;
+  }
+  return likecount;
 }
 
 app.put("/changePassword", async (req, res) => {
