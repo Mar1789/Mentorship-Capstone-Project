@@ -12,6 +12,7 @@ import "./components/Meetup.css";
 import "leaflet/dist/leaflet.css";
 import NavBar from "./components/Navbar";
 import { useEffect, useState } from "react";
+import { getDistance } from "geolib";
 
 function MyComponent(props) {
   const map = useMap();
@@ -37,6 +38,7 @@ const Meetup = () => {
   const [cafes, setCafes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Checks if the user has a valid token to be on the page
   async function auth() {
     setIsLoading(true);
     let token = localStorage.getItem("accessToken");
@@ -49,6 +51,7 @@ const Meetup = () => {
     }).then((data) =>
       data.json().then((data) => {
         if (data === invalid) {
+          // If the token is invalid, the program will try to get a new access token by validating the refresh token
           token = localStorage.getItem("refreshToken");
           fetch("http://localhost:4000/token", {
             method: "POST",
@@ -66,12 +69,14 @@ const Meetup = () => {
             })
           );
         } else {
+          // Set user information
           setUser(data);
           setIsLoading(false);
         }
       })
     );
   }
+
   async function getInfo() {
     setIsLoading(true);
     await fetch(`http://localhost:3000/user/${user.name}`, {
@@ -86,7 +91,7 @@ const Meetup = () => {
       })
     );
   }
-  async function coordinates(position) {
+  async function postCoordinates(position) {
     setLatitude(position.coords.latitude);
     setLongitude(position.coords.longitude);
     setIsLoading(true);
@@ -124,6 +129,7 @@ const Meetup = () => {
       data.json().then((data) => {
         if (data === "User has has not shared their location!") {
           alert("User has has not shared their location!");
+          setIsLoading(false);
         } else {
           setMentorLatitude(data[0].latitude);
           setMentorLongitude(data[0].longitude);
@@ -135,11 +141,14 @@ const Meetup = () => {
     );
   }
   function distance() {
-    const length1 = L.latLng(latitude, longitude);
-    const length2 = L.latLng(mentorLatitude, mentorLongitude);
     const middleLongitude = (longitude + mentorLongitude) / 2;
     const middleLatitude = (latitude + mentorLatitude) / 2;
-    const distance = length1.distanceTo(length2) * 0.000621371;
+    // Calculates distance between both users and converts meters to miles
+    const distance =
+      getDistance(
+        { latitude: latitude, longitude: longitude },
+        { latitude: mentorLatitude, longitude: mentorLongitude }
+      ) * 0.000621371;
     setIsLoading(true);
     if (distance > 30) {
       alert(
@@ -149,6 +158,7 @@ const Meetup = () => {
       setCafes([]);
       setIsLoading(false);
     } else {
+      // Calls the API to check if the middlepoint is in water
       fetch(
         `https://isitwater-com.p.rapidapi.com/?latitude=${middleLatitude}&longitude=${middleLongitude}`,
         {
@@ -161,15 +171,9 @@ const Meetup = () => {
       ).then((data) =>
         data.json().then((data) => {
           if (data.water === true) {
-            alert(
-              "Middlepoint between you and the mentor is in a body of water. Please look into meeting through zoom"
-            );
-            setPlaceId("");
-            setCafes([]);
-            setIsLoading(true);
-          } else {
+            // If the middlepoint is in water, the program will call Geoapify's route API to get the coordinates of the route between both users
             fetch(
-              `https://api.geoapify.com/v1/geocode/reverse?lat=${middleLatitude}&lon=${middleLongitude}&format=json&apiKey=${
+              `https://api.geoapify.com/v1/routing?waypoints=${latitude},${longitude}|${mentorLatitude},${mentorLongitude}&mode=drive&apiKey=${
                 import.meta.env.VITE_GEOAPIFYKEY
               }`,
               {
@@ -179,17 +183,73 @@ const Meetup = () => {
                 },
               }
             ).then((location) =>
-              location.json().then((location) => {
-                setPlaceId(location.results[0].place_id);
-                setIsLoading(false);
-              })
+              location
+                .json()
+                .then((location) => {
+                  //Coordinates store every waypoint that a car would be in the route throughout the trip
+                  let coordinates =
+                    location.features[0].geometry.coordinates[0];
+                  return Promise.all([
+                    findCoordinates(
+                      coordinates,
+                      middleLatitude,
+                      middleLongitude
+                    ),
+                  ]);
+                })
+                .then((coordinates) => {
+                  reverseGeocode(coordinates[0][1], coordinates[0][0]);
+                })
             );
+          } else {
+            reverseGeocode(middleLatitude, middleLongitude);
           }
         })
       );
     }
   }
 
+  async function reverseGeocode(latitude, longitude) {
+    fetch(
+      `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&format=json&apiKey=${
+        import.meta.env.VITE_GEOAPIFYKEY
+      }`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+      }
+    ).then((location) =>
+      location.json().then((location) => {
+        setPlaceId(location.results[0].place_id);
+        setIsLoading(false);
+      })
+    );
+  }
+
+  // Find coordinates that are the closest to the middlepoint on land
+  async function findCoordinates(coordinates, middleLatitude, middleLongitude) {
+    let mini = 10000; // Default value so the first index can change
+    let distance;
+    let index;
+    coordinates.map((coordinates, indexe) => {
+      distance = getDistance(
+        { latitude: middleLatitude, longitude: middleLongitude },
+        { latitude: coordinates[1], longitude: coordinates[0] }
+      );
+      // Convert meters to miles
+      distance *= 0.000621371;
+      // If the distance is less than the current smallest distance, set it as the new smallest
+      if (distance < mini) {
+        index = indexe;
+        mini = distance;
+      }
+    });
+    // Returns the coordinates that is the closest to the midpoint coordinates in water
+    return coordinates[index];
+  }
+  // Looks for nearby cafes by place id
   function findCafe() {
     setIsLoading(true);
     fetch(
@@ -242,7 +302,7 @@ const Meetup = () => {
   useEffect(() => {
     if (info) {
       const location = navigator.geolocation.getCurrentPosition(
-        coordinates,
+        postCoordinates,
         err
       );
       setIsLoading(true);
@@ -281,6 +341,7 @@ const Meetup = () => {
             />
             {middlepoint && mentorLatitude && mentorLongitude && (
               <>
+               {/* Handles the zoom feature when users click on a mentor */}
                 {zoom && (
                   <MyComponent
                     coordinates={[
