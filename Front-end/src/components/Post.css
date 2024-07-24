@@ -5,8 +5,44 @@
   display: flex;
   flex-direction: column;
 }
+.animation {
+  position: absolute;
+  animation: slidein 500ms ease-in forwards;
+}
+.border{
+  background-color: white;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.hover:hover{
+  /* border: 3px solid red; */
+  animation: jump 0.5s forwards 2 alternate ;
+}
+@keyframes slidein {
+  0% {
+    scale: 0% ;
+  }
+
+  100% {
+    /* transform: translateY(0); */
+    scale: 100%;
+  }
+}
+@keyframes jump {
+  0% {
+    transform: translate3d(0,0,0);
+    /* transform: translateY(-200); */
+  }
+
+  100% {
+    transform: translate3d(0,-10px,0);
+    /* transform: translateY(0); */
+  }
+}
 .profile {
-  height: 63px;
+  height: 93px;
+  align-items: center;
   display: flex;
 }
 .photo {
@@ -29,7 +65,7 @@
 }
 .title {
   text-align: left;
-  margin-top: 0px;
+  /* margin-top: 0px; */
   margin-right: auto;
   width: 560px;
   word-wrap: break-word;
@@ -88,5 +124,5 @@ footer {
 .delete {
   position: absolute;
   top: 0;
-  right: 0;
+  right: 10px;
 }

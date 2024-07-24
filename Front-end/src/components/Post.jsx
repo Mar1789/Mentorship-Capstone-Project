@@ -187,7 +187,7 @@ const Post = (props) => {
     setDate(moment(new Date(dates)).format("MMMM D, Y"));
   }, [logo, like]);
   return (
-    <>
+    <div className="border">
       <Dimmer active={isLoading} inverted>
         <Loader inverted content="Loading" />
       </Dimmer>
@@ -250,7 +250,7 @@ const Post = (props) => {
           </Form>
         </CommentGroup>
       </div>
-    </>
+    </div>
   );
 };
 export default Post;
