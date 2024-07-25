@@ -230,11 +230,7 @@ const Home = () => {
       </p>
       <div className="alumni">
         <h2>Where our Alumni are working after PioneerTech</h2>
-        <img
-          className="companylogo"
-          src={Companies}
-          onLoad={(e) => (e.target.style.opacity = "1")}
-        />
+        <img className="companylogo navbar-animation" src={Companies} />
       </div>
 
       <Modal show={show} onHide={handleClose}>

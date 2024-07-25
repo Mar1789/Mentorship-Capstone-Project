@@ -7,7 +7,20 @@ import "semantic-ui-css/semantic.min.css";
 import Navbar from "./components/Navbar";
 import Post from "./components/Post";
 
-import { Dimmer, Loader, GridRow, GridColumn, Grid } from "semantic-ui-react";
+import {
+  Dimmer,
+  Loader,
+  GridRow,
+  GridColumn,
+  Grid,
+  DropdownMenu,
+  DropdownItem,
+  DropdownHeader,
+  DropdownDivider,
+  Dropdown,
+  Form,
+  Input,
+} from "semantic-ui-react";
 
 const Member = () => {
   const [user, setUser] = useState();
@@ -79,6 +92,24 @@ const Member = () => {
       })
     );
   }
+  async function filterPosts(e) {
+    // setIsLoading(true);
+    await fetch(
+      `http://localhost:3000/filterPosts/${e.target.innerText}/${info.id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+      }
+    ).then((data) =>
+      data.json().then((data) => {
+        setPosts(data);
+        setIsLoading(false);
+        console.log(data);
+      })
+    );
+  }
   useEffect(() => {
     auth();
   }, []);
@@ -89,13 +120,54 @@ const Member = () => {
       getPosts();
     }
   }, [user]);
+  const tagOptions = [
+    {
+      key: "Following",
+      text: "Following",
+      value: "Following",
+      label: { color: "red", empty: true, circular: true },
+    },
+    {
+      key: "Most Oldest",
+      text: "Most Oldest",
+      value: "Most Oldest",
+      label: { color: "black", empty: true, circular: true },
+    },
+    {
+      key: "Most Recent",
+      text: "Most Recent",
+      value: "Most Recent",
+      label: { color: "blue", empty: true, circular: true },
+    },
+  ];
   return (
     <>
       <Navbar info={info} />
       {info && (
-        <h1 className="welcome">
-          Welcome: {info.FirstName + " " + info.LastName}
-        </h1>
+        <div>
+          <br />
+          <Dropdown
+            placeholder="Filter"
+            icon="filter"
+            floating
+            labeled
+            button
+            className="icon filter"
+          >
+            <DropdownMenu>
+              <DropdownMenu scrolling>
+                {tagOptions.map((option) => (
+                  <DropdownItem
+                    onClick={filterPosts}
+                    key={option.value}
+                    {...option}
+                  />
+                ))}
+              </DropdownMenu>
+            </DropdownMenu>
+          </Dropdown>
+          <br /> <br /> <br /> <br />
+        </div>
       )}
       <div className="post-center">
         <Dimmer active={isLoading} inverted>
@@ -104,8 +176,8 @@ const Member = () => {
         <Grid divided="vertically" className="sizing">
           {info &&
             posts.map((post) => (
-              <GridRow columns={1} key={post.Post_id}>
-                <GridColumn>
+              <GridRow columns={1} key={post.Post_id} className="animation">
+                <GridColumn className="hover">
                   <Post
                     userid={info.id}
                     id={post.Post_id}

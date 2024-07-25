@@ -6,7 +6,7 @@ import "semantic-ui-css/semantic.min.css";
 
 import Navbar from "./components/Navbar";
 import ArticleComponent from "./components/ArticleComponent";
-import { Dimmer, Loader, Grid } from "semantic-ui-react";
+import { Dimmer, Loader, Grid, GridColumn, GridRow } from "semantic-ui-react";
 
 const Articles = () => {
   const [user, setUser] = useState();
@@ -102,16 +102,20 @@ const Articles = () => {
         <Grid divided="vertically" className="sizing">
           {info &&
             articles.map((article) => (
-              <ArticleComponent
-                key={article.articleId}
-                userid={info.id}
-                id={article.articleId}
-                author={article.userId}
-                date={article.createdAt}
-                text={article.description}
-                title={article.title}
-                article={false}
-              />
+              <GridRow columns={1} key={article.articleId} className="animation">
+                <GridColumn className="hover">
+                  <ArticleComponent
+                    key={article.articleId}
+                    userid={info.id}
+                    id={article.articleId}
+                    author={article.userId}
+                    date={article.createdAt}
+                    text={article.description}
+                    title={article.title}
+                    article={false}
+                  />
+                </GridColumn>
+              </GridRow>
             ))}
         </Grid>
       </div>

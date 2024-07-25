@@ -99,20 +99,21 @@ const Article = (props) => {
         <Loader inverted content="Loading" />
       </Dimmer>
       <div className="post-center">
-        <Grid>
           {info && (
-            <ArticleComponent
-              userid={info.id}
-              id={article.articleId}
-              author={article.userId}
-              date={article.createdAt}
-              text={article.description}
-              title={article.title}
-              article={true}
-            />
+            <>
+              <ArticleComponent
+                userid={info.id}
+                id={article.articleId}
+                author={article.userId}
+                date={article.createdAt}
+                text={article.description}
+                title={article.title}
+                article={true}
+              />
+              <br/>
+              <p className="article-style">{article.description}</p>
+            </>
           )}
-        </Grid>
-        <p className="article-style">{article.description}</p>
       </div>
     </>
   );
