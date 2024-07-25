@@ -187,70 +187,73 @@ const Post = (props) => {
     setDate(moment(new Date(dates)).format("MMMM D, Y"));
   }, [logo, like]);
   return (
-    <div className="border">
-      <Dimmer active={isLoading} inverted>
-        <Loader inverted content="Loading" />
-      </Dimmer>
-      <div className="post-border">
-        <div className="profile">
-          <img
-            className="photo"
-            src="https://react.semantic-ui.com/images/avatar/small/jenny.jpg"
-            onClick={() => (window.location.href = `/profile-${user.id}`)}
-          />
-          <p
-            className="name"
-            onClick={() => (window.location.href = `/profile-${user.id}`)}
-          >
-            {user.FirstName + " " + user.LastName}
-          </p>
-          <p
-            className="accountType"
-            onClick={() => (window.location.href = `/profile-${user.id}`)}
-          >
-            {user.Headline}
-          </p>
+    <>
+      <div className="border">
+        <Dimmer active={isLoading} inverted>
+          <Loader inverted content="Loading" />
+        </Dimmer>
+        <div className="post-border">
+          <div>
+            <div className="profile">
+              <img
+                className="photo"
+                src="https://react.semantic-ui.com/images/avatar/small/jenny.jpg"
+                onClick={() => (window.location.href = `/profile-${user.id}`)}
+              />
+              <p
+                className="name"
+                onClick={() => (window.location.href = `/profile-${user.id}`)}
+              >
+                {user.FirstName + " " + user.LastName}
+              </p>
+              <p
+                className="accountType"
+                onClick={() => (window.location.href = `/profile-${user.id}`)}
+              >
+                {user.Headline}
+              </p>
+            </div>
+            <h1 className="title">{props.title}</h1>
+            <h3 className="p-description">
+              {seeLess === true ? text : logo}
+              {seeLess === false && (
+                <a onClick={() => setSeeLess(true)}> See More</a>
+              )}
+            </h3>
+            <div className="footer">
+            <p className="date">{date}</p>
+            <p className="comments">💬{commentcount}</p>
+            <Icon onClick={handleLike} className="like" name={like}>
+              {likecount}
+            </Icon>
+            {user.id === props.userid && (
+              <Button icon className="delete" color="red" onClick={deletePost}>
+                <Icon name="trash alternate"></Icon>
+              </Button>
+            )}
+          </div>
+          </div>
+          
+          <div className="comment-section">
+            <h3>Comments</h3>
+            <Form onSubmit={handleComment}>
+              <label>Enter your comment here: </label>
+              <input name="comment-response"></input>
+            </Form>
+            <CommentGroup>
+              {comments.map((comment) => (
+                <Comment
+                  key={comment.comment_id}
+                  author={comment.userId}
+                  created={comment.createdAt}
+                  comment={comment.comment}
+                />
+              ))}
+            </CommentGroup>
+          </div>
         </div>
-        <h1 className="title">{props.title}</h1>
-        <h3 className="p-description">
-          {seeLess === true ? text : logo}
-          {seeLess === false && (
-            <a onClick={() => setSeeLess(true)}> See More</a>
-          )}
-        </h3>
-
-        <footer>
-          <p className="date">{date}</p>
-          <p className="comments">💬{commentcount}</p>
-          <Icon onClick={handleLike} className="like" name={like}>
-            {likecount}
-          </Icon>
-          {user.id === props.userid && (
-            <Button icon className="delete" color="red" onClick={deletePost}>
-              <Icon name="trash alternate"></Icon>
-            </Button>
-          )}
-        </footer>
-        <hr />
       </div>
-      <div className="comment-section">
-        <h3>Comments</h3>
-        <CommentGroup>
-          {comments.map((comment) => (
-            <Comment
-              key={comment.comment_id}
-              author={comment.userId}
-              created={comment.createdAt}
-              comment={comment.comment}
-            />
-          ))}
-          <Form onSubmit={handleComment}>
-            <label>Enter your comment here: </label>
-            <input name="comment-response"></input>
-          </Form>
-        </CommentGroup>
-      </div>
-    </div>
+    </>
   );
 };
 export default Post;

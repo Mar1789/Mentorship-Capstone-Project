@@ -43,7 +43,7 @@ const ArticleComponent = (props) => {
     setDate(moment(new Date(dates)).format("MMMM D, Y"));
   }, [logo]);
   return (
-    <>
+    <div className="border-article">
       <Dimmer active={isLoading} inverted>
         <Loader inverted content="Loading" />
       </Dimmer>
@@ -51,27 +51,28 @@ const ArticleComponent = (props) => {
         className="post-border"
         onClick={() => (window.location.href = `/article-${props.id}`)}
       >
-        <div className="profile">
-          <img
-            className="photo"
-            src="https://react.semantic-ui.com/images/avatar/small/jenny.jpg"
-            onClick={userProfile}
-          />
-          <p className="name" onClick={userProfile}>
-            {user.FirstName + " " + user.LastName}
-          </p>
-          <p className="accountType" onClick={userProfile}>
-            {user.Headline}
-          </p>
+        <div>
+          <div className="profile">
+            <img
+              className="photo"
+              src="https://react.semantic-ui.com/images/avatar/small/jenny.jpg"
+              onClick={userProfile}
+            />
+            <p className="name" onClick={userProfile}>
+              {user.FirstName + " " + user.LastName}
+            </p>
+            <p className="accountType" onClick={userProfile}>
+              {user.Headline}
+            </p>
+          </div>
+          <h1 className="title">{props.title}</h1>
+          {props.article === false && <h3 className="p-description">{logo}</h3>}
+          <div className="footer">
+            <p className="date">{date}</p>
+          </div>
         </div>
-        <h1 className="title">{props.title}</h1>
-        {props.article === false && <h3 className="p-description">{logo}</h3>}
-        <footer>
-          <p className="date">{date}</p>
-        </footer>
-        <hr />
       </div>
-    </>
+    </div>
   );
 };
 export default ArticleComponent;

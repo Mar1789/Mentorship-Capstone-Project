@@ -18,6 +18,7 @@ import {
   DropdownHeader,
   DropdownDivider,
   Dropdown,
+  Form,
   Input,
 } from "semantic-ui-react";
 
@@ -91,6 +92,24 @@ const Member = () => {
       })
     );
   }
+  async function filterPosts(e) {
+    // setIsLoading(true);
+    await fetch(
+      `http://localhost:3000/filterPosts/${e.target.innerText}/${info.id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+      }
+    ).then((data) =>
+      data.json().then((data) => {
+        setPosts(data);
+        setIsLoading(false);
+        console.log(data);
+      })
+    );
+  }
   useEffect(() => {
     auth();
   }, []);
@@ -109,16 +128,16 @@ const Member = () => {
       label: { color: "red", empty: true, circular: true },
     },
     {
+      key: "Most Oldest",
+      text: "Most Oldest",
+      value: "Most Oldest",
+      label: { color: "black", empty: true, circular: true },
+    },
+    {
       key: "Most Recent",
       text: "Most Recent",
       value: "Most Recent",
       label: { color: "blue", empty: true, circular: true },
-    },
-    {
-      key: "Cannot Fix",
-      text: "Cannot Fix",
-      value: "Cannot Fix",
-      label: { color: "black", empty: true, circular: true },
     },
   ];
   return (
@@ -128,7 +147,7 @@ const Member = () => {
         <div>
           <br />
           <Dropdown
-            text="Filter Posts"
+            placeholder="Filter"
             icon="filter"
             floating
             labeled
@@ -138,11 +157,16 @@ const Member = () => {
             <DropdownMenu>
               <DropdownMenu scrolling>
                 {tagOptions.map((option) => (
-                  <DropdownItem key={option.value} {...option} />
+                  <DropdownItem
+                    onClick={filterPosts}
+                    key={option.value}
+                    {...option}
+                  />
                 ))}
               </DropdownMenu>
             </DropdownMenu>
           </Dropdown>
+          <br /> <br /> <br /> <br />
         </div>
       )}
       <div className="post-center">

@@ -155,11 +155,43 @@ app.get("/commentcount/:id", async (req, res) => {
   });
   res.json(commentCount);
 });
+app.get("/filterPosts/:filter/:userId", async (req, res) => {
+  const filter = req.params.filter;
+  const userId = req.params.userId
+  let posts;
+  if (filter === "Following") {
+    const following = await prisma.follow.findMany({
+      where: {
+        followerId: parseInt(userId),
+      },
+    });
+    posts = await prisma.posts.findMany({
+      where: {
+        OR: following.map((user) => ({
+          userId: parseInt(user.userId),
+        })),
+      },
+    });
+  } else if (filter === "Most Recent") {
+    posts = await prisma.posts.findMany({
+      orderBy: {
+        Post_id: "desc",
+      },
+    });
+  } else if (filter === "Most Oldest") {
+    posts = await prisma.posts.findMany({
+      orderBy: {
+        Post_id: "asc",
+      },
+    });
+  }
+  res.json(posts);
+});
 
 app.get("/posts", async (req, res) => {
   const posts = await prisma.posts.findMany({
     orderBy: {
-      Post_id: "asc",
+      Post_id: "desc",
     },
   });
   res.json(posts);
@@ -279,6 +311,9 @@ app.get("/comments/:id", async (req, res) => {
   const comments = await prisma.comments.findMany({
     where: {
       Post_id: parseInt(PostId),
+    },
+    orderBy: {
+      comment_id: "desc",
     },
   });
   res.json(comments);
