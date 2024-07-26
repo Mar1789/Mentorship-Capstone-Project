@@ -143,12 +143,13 @@ const Meetup = () => {
   function distance() {
     const middleLongitude = (longitude + mentorLongitude) / 2;
     const middleLatitude = (latitude + mentorLatitude) / 2;
+    const convertMiles = 0.000621371;
     // Calculates distance between both users and converts meters to miles
     const distance =
       getDistance(
         { latitude: latitude, longitude: longitude },
         { latitude: mentorLatitude, longitude: mentorLongitude }
-      ) * 0.000621371;
+      ) * convertMiles;
     setIsLoading(true);
     if (distance > 30) {
       alert(
@@ -159,65 +160,100 @@ const Meetup = () => {
       setIsLoading(false);
     } else {
       // Calls the API to check if the middlepoint is in water
-      fetch(
-        `https://isitwater-com.p.rapidapi.com/?latitude=${middleLatitude}&longitude=${middleLongitude}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "Application/json",
-            "x-rapidapi-key": import.meta.env.VITE_WATERKEY,
-          },
-        }
-      ).then((data) =>
-        data.json().then((data) => {
-          if (data.water === true) {
-            // If the middlepoint is in water, the program will call Geoapify's route API to get the coordinates of the route between both users
-            fetch(
-              `https://api.geoapify.com/v1/routing?waypoints=${latitude},${longitude}|${mentorLatitude},${mentorLongitude}&mode=drive&apiKey=${
-                import.meta.env.VITE_GEOAPIFYKEY
-              }`,
-              {
-                method: "GET",
-                headers: {
-                  "Content-Type": "Application/json",
-                },
-              }
-            ).then((location) =>
-              location
-                .json()
-                .then((location) => {
-                  if (
-                    location.message &&
-                    location.message === "No path could be found for input"
-                  ) {
-                    setIsLoading(false);
-                    return alert(
-                      "No path can be found for the input. Please meet through zoom."
-                    );
-                  }
-                  //Coordinates store every waypoint that a car would be in the route throughout the trip
-                  let coordinates =
-                    location.features[0].geometry.coordinates[0];
-                  return Promise.all([
-                    findCoordinates(
-                      coordinates,
-                      middleLatitude,
-                      middleLongitude
-                    ),
-                  ]);
-                })
-                .then((coordinates) => {
-                  reverseGeocode(coordinates[0][1], coordinates[0][0]);
-                })
-            );
-          } else {
-            reverseGeocode(middleLatitude, middleLongitude);
-          }
-        })
+      waterDetector(
+        latitude,
+        longitude,
+        mentorLatitude,
+        mentorLongitude,
+        middleLatitude,
+        middleLongitude
       );
     }
   }
+  // Function to test if the middlepoint is under water
+  async function waterDetector(
+    latitude,
+    longitude,
+    mentorLatitude,
+    mentorLongitude,
+    middleLatitude,
+    middleLongitude
+  ) {
+    fetch(
+      `https://isitwater-com.p.rapidapi.com/?latitude=${middleLatitude}&longitude=${middleLongitude}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "Application/json",
+          "x-rapidapi-key": import.meta.env.VITE_WATERKEY,
+        },
+      }
+    ).then((data) =>
+      data.json().then((data) => {
+        if (data.water === true) {
+          // If the middlepoint is in water, the program will call Geoapify's route API to get the coordinates of the route between both users
+          findMiddlePoint(
+            latitude,
+            longitude,
+            mentorLatitude,
+            mentorLongitude,
+            middleLatitude,
+            middleLongitude
+          );
+        } else {
+          reverseGeocode(middleLatitude, middleLongitude);
+        }
+      })
+    );
+  }
 
+  // Looks for the middle point coordinate by using Geoapify's Routing API
+  async function findMiddlePoint(
+    latitude,
+    longitude,
+    mentorLatitude,
+    mentorLongitude,
+    middleLatitude,
+    middleLongitude
+  ) {
+    fetch(
+      `https://api.geoapify.com/v1/routing?waypoints=${latitude},${longitude}|${mentorLatitude},${mentorLongitude}&mode=drive&apiKey=${
+        import.meta.env.VITE_GEOAPIFYKEY
+      }`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+      }
+    ).then((location) =>
+      location
+        .json()
+        .then((location) => {
+          if (
+            location.message &&
+            location.message === "No path could be found for input"
+          ) {
+            setIsLoading(false);
+            return alert(
+              "No path can be found for the input. Please meet through zoom."
+            );
+          }
+          //Coordinates store every waypoint that a car would be in the route throughout the trip
+          let coordinates = location.features[0].geometry.coordinates[0];
+          return Promise.all([
+            findCoordinates(coordinates, middleLatitude, middleLongitude),
+          ]);
+        })
+        .then((coordinates) => {
+          if (coordinates) {
+            const coordsLatitude = coordinates[0][1];
+            const coordsLongitude = coordinates[0][1];
+            reverseGeocode(coordsLatitude, coordsLongitude);
+          }
+        })
+    );
+  }
   async function reverseGeocode(latitude, longitude) {
     fetch(
       `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&format=json&apiKey=${
@@ -242,13 +278,14 @@ const Meetup = () => {
     let mini = 10000; // Default value so the first index can change
     let distance;
     let index;
+    const convertMiles = 0.000621371;
     coordinates.map((coordinates, indexe) => {
       distance = getDistance(
         { latitude: middleLatitude, longitude: middleLongitude },
         { latitude: coordinates[1], longitude: coordinates[0] }
       );
       // Convert meters to miles
-      distance *= 0.000621371;
+      distance *= convertMiles;
       // If the distance is less than the current smallest distance, set it as the new smallest
       if (distance < mini) {
         index = indexe;
