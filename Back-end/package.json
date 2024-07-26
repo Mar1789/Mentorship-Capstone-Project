@@ -1,4 +1,18 @@
 {
+  "name": "prisma-demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "prisma migrate deploy && prisma generate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "prisma": "^5.15.0"
+  },
   "dependencies": {
     "@prisma/client": "^5.16.0",
     "bcrypt": "^5.1.1",
