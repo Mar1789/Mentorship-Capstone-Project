@@ -27,7 +27,7 @@ const Post = (props) => {
 
   function setLikes() {
     setIsLoading(true);
-    fetch(`http://localhost:3000/likeUser/${props.id}/${props.userid}`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/likeUser/${props.id}/${props.userid}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -46,7 +46,7 @@ const Post = (props) => {
   }
   function getLikes() {
     setIsLoading(true);
-    fetch(`http://localhost:3000/likes/${props.id}`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/likes/${props.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -60,7 +60,7 @@ const Post = (props) => {
   }
   function author() {
     setIsLoading(true);
-    fetch(`http://localhost:3000/commentUser/${props.author}`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/commentUser/${props.author}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -76,7 +76,7 @@ const Post = (props) => {
   function handleLike() {
     setIsLoading(true);
     if (like === "heart outline") {
-      fetch(`http://localhost:3000/likes/${props.id}`, {
+      fetch(`https://mentorship-capstone-project.onrender.com/likes/${props.id}`, {
         method: "POST",
         headers: {
           "Content-Type": "Application/json",
@@ -89,7 +89,7 @@ const Post = (props) => {
         })
       );
     } else {
-      fetch(`http://localhost:3000/likes/${props.id}`, {
+      fetch(`https://mentorship-capstone-project.onrender.com/likes/${props.id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "Application/json",
@@ -110,7 +110,7 @@ const Post = (props) => {
     const form = e.target;
     const formData = new FormData(form);
     const comment = formData.get("comment-response");
-    fetch(`http://localhost:3000/comment/${props.id}`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/comment/${props.id}`, {
       method: "POST",
       headers: {
         "Content-Type": "Application/json",
@@ -127,7 +127,7 @@ const Post = (props) => {
   }
   function deletePost() {
     setIsLoading(true);
-    fetch(`http://localhost:3000/post`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/post`, {
       method: "DELETE",
       headers: {
         "Content-Type": "Application/json",
@@ -143,7 +143,7 @@ const Post = (props) => {
 
   function getComments() {
     setIsLoading(true);
-    fetch(`http://localhost:3000/comments/${props.id}`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/comments/${props.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -157,7 +157,7 @@ const Post = (props) => {
   }
   function commentCount() {
     setIsLoading(true);
-    fetch(`http://localhost:3000/commentcount/${props.id}`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/commentcount/${props.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",

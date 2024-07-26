@@ -43,7 +43,7 @@ const Home = () => {
   async function auth() {
     setPageLoad(true);
     let token = localStorage.getItem("accessToken");
-    await fetch("http://localhost:4000/auth", {
+    await fetch("https://mentorship-capstone-project-auth-js.onrender.com/auth", {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -53,7 +53,7 @@ const Home = () => {
       data.json().then((data) => {
         if (data === invalid) {
           token = localStorage.getItem("refreshToken");
-          fetch("http://localhost:4000/token", {
+          fetch("https://mentorship-capstone-project-auth-js.onrender.com/token", {
             method: "POST",
             headers: {
               "Content-Type": "Application/json",
@@ -95,7 +95,7 @@ const Home = () => {
     if (login === true) {
       const username = formData.get("username");
       const password = formData.get("password");
-      fetch("http://localhost:4000/login", {
+      fetch("https://mentorship-capstone-project-auth-js.onrender.com/login", {
         method: "POST",
         headers: {
           "Content-Type": "Application/json",
@@ -139,7 +139,7 @@ const Home = () => {
       if (password !== cpassword) {
         return setUserError("Passwords do not match");
       }
-      fetch("http://localhost:3000/register", {
+      fetch("https://mentorship-capstone-project.onrender.com/register", {
         method: "POST",
         headers: {
           "Content-Type": "Application/json",

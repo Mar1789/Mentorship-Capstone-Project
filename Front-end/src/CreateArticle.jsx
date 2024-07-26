@@ -20,7 +20,7 @@ const CreateArticle = () => {
   async function logOut() {
     setIsLoading(true);
     const token = localStorage.getItem("accessToken");
-    await fetch("http://localhost:4000/logout", {
+    await fetch("https://mentorship-capstone-project-auth-js.onrender.com/logout", {
       method: "DELETE",
       headers: {
         "Content-Type": "Application/json",
@@ -44,7 +44,7 @@ const CreateArticle = () => {
     const title = formData.get("title");
     const text = formData.get("description");
     auth();
-    fetch("http://localhost:3000/article", {
+    fetch("https://mentorship-capstone-project.onrender.com/article", {
       method: "POST",
       headers: {
         "Content-Type": "Application/json",
@@ -66,7 +66,7 @@ const CreateArticle = () => {
   async function auth() {
     setIsLoading(true);
     let token = localStorage.getItem("accessToken");
-    await fetch("http://localhost:4000/auth", {
+    await fetch("https://mentorship-capstone-project-auth-js.onrender.com/auth", {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -76,7 +76,7 @@ const CreateArticle = () => {
       data.json().then((data) => {
         if (data === invalid) {
           token = localStorage.getItem("refreshToken");
-          fetch("http://localhost:4000/token", {
+          fetch("https://mentorship-capstone-project-auth-js.onrender.com/token", {
             method: "POST",
             headers: {
               "Content-Type": "Application/json",
@@ -100,7 +100,7 @@ const CreateArticle = () => {
   }
   async function getInfo() {
     setIsLoading(true);
-    await fetch(`http://localhost:3000/user/${user.name}`, {
+    await fetch(`https://mentorship-capstone-project.onrender.com/user/${user.name}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",

@@ -42,24 +42,30 @@ const Meetup = () => {
   async function auth() {
     setIsLoading(true);
     let token = localStorage.getItem("accessToken");
-    await fetch("http://localhost:4000/auth", {
-      method: "GET",
-      headers: {
-        "Content-Type": "Application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }).then((data) =>
+    await fetch(
+      "https://mentorship-capstone-project-auth-js.onrender.com/auth",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "Application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    ).then((data) =>
       data.json().then((data) => {
         if (data === invalid) {
           // If the token is invalid, the program will try to get a new access token by validating the refresh token
           token = localStorage.getItem("refreshToken");
-          fetch("http://localhost:4000/token", {
-            method: "POST",
-            headers: {
-              "Content-Type": "Application/json",
-            },
-            body: JSON.stringify({ token: token }),
-          }).then((data) =>
+          fetch(
+            "https://mentorship-capstone-project-auth-js.onrender.com/token",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "Application/json",
+              },
+              body: JSON.stringify({ token: token }),
+            }
+          ).then((data) =>
             data.json().then((data) => {
               if (data === invalid) {
                 window.location.href = "/";
@@ -79,12 +85,15 @@ const Meetup = () => {
 
   async function getInfo() {
     setIsLoading(true);
-    await fetch(`http://localhost:3000/user/${user.name}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "Application/json",
-      },
-    }).then((data) =>
+    await fetch(
+      `https://mentorship-capstone-project.onrender.com/user/${user.name}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+      }
+    ).then((data) =>
       data.json().then((data) => {
         setInfo(data);
         setIsLoading(false);
@@ -97,7 +106,7 @@ const Meetup = () => {
     setIsLoading(true);
     {
       info &&
-        fetch("http://localhost:3000/coordinates", {
+        fetch("https://mentorship-capstone-project.onrender.com/coordinates", {
           method: "POST",
           headers: {
             "Content-Type": "Application/json",
@@ -120,12 +129,15 @@ const Meetup = () => {
   async function getCoords(e) {
     const userId = e.target.id;
     setIsLoading(true);
-    await fetch(`http://localhost:3000/coordinates/${userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "Application/json",
-      },
-    }).then((data) =>
+    await fetch(
+      `https://mentorship-capstone-project.onrender.com/coordinates/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+      }
+    ).then((data) =>
       data.json().then((data) => {
         if (data === "User has has not shared their location!") {
           alert("User has has not shared their location!");
@@ -318,7 +330,7 @@ const Meetup = () => {
 
   function getMentors() {
     setIsLoading(true);
-    fetch(`http://localhost:3000/mentors`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/mentors`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -332,10 +344,13 @@ const Meetup = () => {
   }
 
   const customIcon = new L.icon({
-    iconUrl: "../public/location.png",
+    iconUrl: "/location.png",
     iconSize: [38, 38],
   });
-
+  const defaultIcon = new L.icon({
+    iconUrl: "/pin-map.png",
+    iconSize: [38, 38]
+  });
   useEffect(() => {
     auth();
   }, []);
@@ -397,12 +412,16 @@ const Meetup = () => {
                     setZoom={setZoom}
                   />
                 )}
-                <Marker position={[mentorLatitude, mentorLongitude]}>
+                <Marker
+                  icon={defaultIcon}
+                  src="https://unpkg.com/leaflet@1.3.3/dist/images/marker-icon-2x.png"
+                  position={[mentorLatitude, mentorLongitude]}
+                >
                   <Popup>Mentor Location</Popup>
                 </Marker>
               </>
             )}
-            <Marker position={[latitude, longitude]}>
+            <Marker icon={defaultIcon} position={[latitude, longitude]}>
               <Popup>You are Here</Popup>
             </Marker>
             {cafes.map((cafe, index) => (

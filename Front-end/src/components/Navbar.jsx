@@ -11,7 +11,7 @@ const NavBar = (props) => {
   async function LogOut() {
     setIsLoading(true);
     const token = localStorage.getItem("accessToken");
-    await fetch("http://localhost:4000/logout", {
+    await fetch("https://mentorship-capstone-project-auth-js.onrender.com/logout", {
       method: "DELETE",
       headers: {
         "Content-Type": "Application/json",
