@@ -42,10 +42,10 @@ function App() {
       })
     );
   }
-  // useEffect(() => {
-  //   getUsers();
-  //   getArticles();
-  // }, []);
+  useEffect(() => {
+    getUsers();
+    getArticles();
+  }, []);
   return (
     <BrowserRouter>
       <Routes>
