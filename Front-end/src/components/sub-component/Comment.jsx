@@ -21,7 +21,7 @@ const Comments = (props) => {
 
   function commentAuthors() {
     setIsLoading(true);
-    fetch(`http://localhost:3000/commentUser/${props.author}`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/commentUser/${props.author}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",

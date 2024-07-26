@@ -27,7 +27,7 @@ const Settings = () => {
   async function auth() {
     setIsLoading(true);
     let token = localStorage.getItem("accessToken");
-    await fetch("http://localhost:4000/auth", {
+    await fetch("https://mentorship-capstone-project-auth-js.onrender.com/auth", {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -37,7 +37,7 @@ const Settings = () => {
       data.json().then((data) => {
         if (data === "Invalid Token") {
           token = localStorage.getItem("refreshToken");
-          fetch("http://localhost:4000/token", {
+          fetch("https://mentorship-capstone-project-auth-js.onrender.com/token", {
             method: "POST",
             headers: {
               "Content-Type": "Application/json",
@@ -62,7 +62,7 @@ const Settings = () => {
 
   async function userInfo() {
     setIsLoading(true);
-    await fetch(`http://localhost:3000/user/${user.name}`, {
+    await fetch(`https://mentorship-capstone-project.onrender.com/user/${user.name}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -90,7 +90,7 @@ const Settings = () => {
       setIsLoading(true);
       return setUserError("Age must be a valid number!");
     }
-    fetch(`http://localhost:3000/user`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/user`, {
       method: "PUT",
       headers: {
         "Content-Type": "Application/json",

@@ -31,7 +31,7 @@ const Profile = (props) => {
   async function auth() {
     setIsLoading(true);
     let token = localStorage.getItem("accessToken");
-    await fetch("http://localhost:4000/auth", {
+    await fetch("https://mentorship-capstone-project-auth-js.onrender.com/auth", {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -41,7 +41,7 @@ const Profile = (props) => {
       data.json().then((data) => {
         if (data === "Invalid Token") {
           token = localStorage.getItem("refreshToken");
-          fetch("http://localhost:4000/token", {
+          fetch("https://mentorship-capstone-project-auth-js.onrender.com/token", {
             method: "POST",
             headers: {
               "Content-Type": "Application/json",
@@ -66,7 +66,7 @@ const Profile = (props) => {
 
   async function getInfo() {
     setIsLoading(true);
-    await fetch(`http://localhost:3000/user/${user.name}`, {
+    await fetch(`https://mentorship-capstone-project.onrender.com/user/${user.name}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -80,7 +80,7 @@ const Profile = (props) => {
   }
   async function userProfile() {
     setIsLoading(true);
-    await fetch(`http://localhost:3000/user/${props.name}`, {
+    await fetch(`https://mentorship-capstone-project.onrender.com/user/${props.name}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -96,7 +96,7 @@ const Profile = (props) => {
   }
   function getFollowers() {
     setIsLoading(true);
-    fetch(`http://localhost:3000/followers/${profile.id}`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/followers/${profile.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -111,7 +111,7 @@ const Profile = (props) => {
 
   function setFollow() {
     setIsLoading(true);
-    fetch(`http://localhost:3000/followUser/${user.id}/${profile.id}`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/followUser/${user.id}/${profile.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -130,7 +130,7 @@ const Profile = (props) => {
   function handleFollow() {
     setIsLoading(true);
     if (isFollowing === false) {
-      fetch(`http://localhost:3000/follow/${profile.id}`, {
+      fetch(`https://mentorship-capstone-project.onrender.com/follow/${profile.id}`, {
         method: "POST",
         headers: {
           "Content-Type": "Application/json",
@@ -143,7 +143,7 @@ const Profile = (props) => {
         })
       );
     } else {
-      fetch(`http://localhost:3000/follow/${profile.id}`, {
+      fetch(`https://mentorship-capstone-project.onrender.com/follow/${profile.id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "Application/json",

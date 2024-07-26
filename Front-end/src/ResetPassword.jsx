@@ -26,7 +26,7 @@ const ResetPassword = () => {
     const form = e.target;
     const formData = new FormData(form);
     const email = formData.get("email");
-    fetch(`http://localhost:3000/resetPassword`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/resetPassword`, {
       method: "POST",
       headers: {
         "Content-Type": "Application/json",
@@ -52,7 +52,7 @@ const ResetPassword = () => {
     const formData = new FormData(form);
     const resetCode = formData.get("code");
 
-    fetch(`http://localhost:3000/verifyCode/${resetCode}`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/verifyCode/${resetCode}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "Application/json",
@@ -78,7 +78,7 @@ const ResetPassword = () => {
     const password = formData.get("password");
     const cpassword = formData.get("cpassword");
     if (password === cpassword) {
-      fetch(`http://localhost:3000/changePassword`, {
+      fetch(`https://mentorship-capstone-project.onrender.com/changePassword`, {
         method: "PUT",
         headers: {
           "Content-Type": "Application/json",

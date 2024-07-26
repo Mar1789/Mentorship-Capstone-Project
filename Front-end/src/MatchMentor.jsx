@@ -29,7 +29,7 @@ const MatchMentor = (props) => {
   async function auth() {
     setIsLoading(true);
     let token = localStorage.getItem("accessToken");
-    await fetch("http://localhost:4000/auth", {
+    await fetch("https://mentorship-capstone-project-auth-js.onrender.com/auth", {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -39,7 +39,7 @@ const MatchMentor = (props) => {
       data.json().then((data) => {
         if (data === invalid) {
           token = localStorage.getItem("refreshToken");
-          fetch("http://localhost:4000/token", {
+          fetch("https://mentorship-capstone-project-auth-js.onrender.com/token", {
             method: "POST",
             headers: {
               "Content-Type": "Application/json",
@@ -64,7 +64,7 @@ const MatchMentor = (props) => {
 
   async function getInfo() {
     setIsLoading(true);
-    await fetch(`http://localhost:3000/user/${user.name}`, {
+    await fetch(`https://mentorship-capstone-project.onrender.com/user/${user.name}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -82,7 +82,7 @@ const MatchMentor = (props) => {
     const formData = new FormData(form);
     const age = formData.get("Age");
     const keyword = formData.get("interest");
-    fetch(`http://localhost:3000/match/${info.id}/${age}/${keyword}:`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/match/${info.id}/${age}/${keyword}:`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",

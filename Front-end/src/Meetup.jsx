@@ -42,7 +42,7 @@ const Meetup = () => {
   async function auth() {
     setIsLoading(true);
     let token = localStorage.getItem("accessToken");
-    await fetch("http://localhost:4000/auth", {
+    await fetch("https://mentorship-capstone-project-auth-js.onrender.com/auth", {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -53,7 +53,7 @@ const Meetup = () => {
         if (data === invalid) {
           // If the token is invalid, the program will try to get a new access token by validating the refresh token
           token = localStorage.getItem("refreshToken");
-          fetch("http://localhost:4000/token", {
+          fetch("https://mentorship-capstone-project-auth-js.onrender.com/token", {
             method: "POST",
             headers: {
               "Content-Type": "Application/json",
@@ -79,7 +79,7 @@ const Meetup = () => {
 
   async function getInfo() {
     setIsLoading(true);
-    await fetch(`http://localhost:3000/user/${user.name}`, {
+    await fetch(`https://mentorship-capstone-project.onrender.com/user/${user.name}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -97,7 +97,7 @@ const Meetup = () => {
     setIsLoading(true);
     {
       info &&
-        fetch("http://localhost:3000/coordinates", {
+        fetch("https://mentorship-capstone-project.onrender.com/coordinates", {
           method: "POST",
           headers: {
             "Content-Type": "Application/json",
@@ -120,7 +120,7 @@ const Meetup = () => {
   async function getCoords(e) {
     const userId = e.target.id;
     setIsLoading(true);
-    await fetch(`http://localhost:3000/coordinates/${userId}`, {
+    await fetch(`https://mentorship-capstone-project.onrender.com/coordinates/${userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -318,7 +318,7 @@ const Meetup = () => {
 
   function getMentors() {
     setIsLoading(true);
-    fetch(`http://localhost:3000/mentors`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/mentors`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",

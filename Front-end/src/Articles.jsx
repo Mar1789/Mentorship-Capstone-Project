@@ -49,7 +49,7 @@ const Articles = () => {
   }
 
   async function getInfo() {
-    await fetch(`http://localhost:3000/user/${user.name}`, {
+    await fetch(`https://mentorship-capstone-project.onrender.com/user/${user.name}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -62,7 +62,7 @@ const Articles = () => {
   }
   async function getArticles() {
     setIsLoading(true);
-    await fetch(`http://localhost:3000/articles/${info.id}`, {
+    await fetch(`https://mentorship-capstone-project.onrender.com/articles/${info.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
