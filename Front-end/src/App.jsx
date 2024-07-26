@@ -19,7 +19,7 @@ function App() {
   const [users, setUsers] = useState([]);
   const [articles, setArticles] = useState([]);
   async function getUsers() {
-    await fetch("http://localhost:3000/users", {
+    await fetch("https://mentorship-capstone-project.onrender.com/users", {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -31,7 +31,7 @@ function App() {
     );
   }
   async function getArticles() {
-    await fetch("http://localhost:3000/articles", {
+    await fetch("https://mentorship-capstone-project.onrender.com/articles", {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",

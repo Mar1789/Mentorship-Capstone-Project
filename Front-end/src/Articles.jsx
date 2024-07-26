@@ -16,7 +16,7 @@ const Articles = () => {
 
   async function auth() {
     let token = localStorage.getItem("accessToken");
-    await fetch("http://localhost:4000/auth", {
+    await fetch("https://mentorship-capstone-project-auth-js.onrender.com/auth", {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -26,7 +26,7 @@ const Articles = () => {
       data.json().then((data) => {
         if (data === "Invalid Token") {
           token = localStorage.getItem("refreshToken");
-          fetch("http://localhost:4000/token", {
+          fetch("https://mentorship-capstone-project-auth-js.onrender.com/token", {
             method: "POST",
             headers: {
               "Content-Type": "Application/json",
