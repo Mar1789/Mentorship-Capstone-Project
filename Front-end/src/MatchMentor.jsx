@@ -145,7 +145,7 @@ const MatchMentor = (props) => {
             <CardGroup>
               {mentors &&
                 mentors.map((mentor, index) => (
-                  <Card className="card-align" key={index}>
+                  <Card className="card-align" key={index} onClick={() => window.location.href = `/profile-${mentor.id}`}>
                     <CardContent>
                       <Image
                         floated="right"
@@ -157,17 +157,6 @@ const MatchMentor = (props) => {
                       </CardHeader>
                       <CardMeta>{mentor.Headline}</CardMeta>
                       <CardMeta>Located in {mentor.state}</CardMeta>
-                      <CardDescription>X Followers</CardDescription>
-                    </CardContent>
-                    <CardContent extra>
-                      <div className="ui two buttons">
-                        <Button basic color="green">
-                          Follow
-                        </Button>
-                        <Button basic color="red">
-                          Decline
-                        </Button>
-                      </div>
                     </CardContent>
                   </Card>
                 ))}
