@@ -84,6 +84,7 @@ const Settings = () => {
     const role = formData.get("role");
     const age = formData.get("Age");
     const state = formData.get("state");
+    const bookingLink = formData.get("bookingLink");
     setIsLoading(true);
     if (isNaN(parseInt(age))) {
       setIsLoading(true);
@@ -102,6 +103,7 @@ const Settings = () => {
         role,
         age,
         state,
+        bookingLink,
       }),
     }).then((data) =>
       data.json().then((data) => {
@@ -234,6 +236,14 @@ const Settings = () => {
                 <option value="WI">Wisconsin</option>
                 <option value="WY">Wyoming</option>
               </select>
+              <label>Booking Link</label>
+              <input
+                type="url"
+                name="bookingLink"
+                placeholder="Enter your booking link"
+                defaultValue={info.bookingLink}
+                required
+              />
             </FormField>
             <Button type="submit">Submit</Button>
           </Form>

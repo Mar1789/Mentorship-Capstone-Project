@@ -157,7 +157,7 @@ app.get("/commentcount/:id", async (req, res) => {
 });
 app.get("/filterPosts/:filter/:userId", async (req, res) => {
   const filter = req.params.filter;
-  const userId = req.params.userId
+  const userId = req.params.userId;
   let posts;
   if (filter === "Following") {
     const following = await prisma.follow.findMany({
@@ -271,7 +271,16 @@ app.get("/users", async (req, res) => {
 });
 
 app.put("/user", async (req, res) => {
-  const { userId, firstName, lastName, headline, role, age, state } = req.body;
+  const {
+    userId,
+    firstName,
+    lastName,
+    headline,
+    role,
+    age,
+    state,
+    bookingLink,
+  } = req.body;
   const updateUser = await prisma.User.update({
     where: {
       id: parseInt(userId),
@@ -283,6 +292,7 @@ app.put("/user", async (req, res) => {
       accountType: role,
       age: parseInt(age),
       state: state,
+      bookingLink: bookingLink,
     },
   });
   res.json(updateUser);
@@ -352,6 +362,7 @@ app.post("/register", async (req, res) => {
     accountType,
     age,
     state,
+    bookingLink,
   } = req.body;
   const account = await prisma.User.findFirst({
     where: {
@@ -380,6 +391,7 @@ app.post("/register", async (req, res) => {
             accountType,
             age: parseInt(age),
             state,
+            bookingLink,
           },
         });
         res.json(user);

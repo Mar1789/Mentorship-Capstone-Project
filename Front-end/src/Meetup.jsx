@@ -186,9 +186,14 @@ const Meetup = () => {
               location
                 .json()
                 .then((location) => {
-                  if(location.message && location.message === "No path could be found for input"){
+                  if (
+                    location.message &&
+                    location.message === "No path could be found for input"
+                  ) {
                     setIsLoading(false);
-                    return alert("No path can be found for the input. Please meet through zoom.")
+                    return alert(
+                      "No path can be found for the input. Please meet through zoom."
+                    );
                   }
                   //Coordinates store every waypoint that a car would be in the route throughout the trip
                   let coordinates =
@@ -345,7 +350,7 @@ const Meetup = () => {
             />
             {middlepoint && mentorLatitude && mentorLongitude && (
               <>
-               {/* Handles the zoom feature when users click on a mentor */}
+                {/* Handles the zoom feature when users click on a mentor */}
                 {zoom && (
                   <MyComponent
                     coordinates={[
@@ -378,7 +383,11 @@ const Meetup = () => {
                   )}
                   {cafe.properties.website && (
                     <>
-                      Cafe Website: <a>{cafe.properties.website}</a> <br />
+                      Cafe Website:{" "}
+                      <a href={cafe.properties.website} target="_blank">
+                        {cafe.properties.website}
+                      </a>{" "}
+                      <br />
                     </>
                   )}
                   Directions: {cafe.properties.housenumber}{" "}
@@ -418,7 +427,9 @@ const Meetup = () => {
                 ></script>
                 <a
                   id="Setmore_button_iframe"
-                  href="https://booking.setmore.com/scheduleappointment/757465e5-cf7a-4925-8a2a-db3fd96c3090"
+                  href={mentor.bookingLink}
+                  target="_blank"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <img
                     border="none"
