@@ -132,6 +132,7 @@ const Home = () => {
       const role = e.target.querySelector("span.text").textContent;
       const age = formData.get("Age");
       const state = formData.get("state");
+      const bookingLink = formData.get("bookingLink");
       if (isNaN(parseInt(age))) {
         return setUserError("Age must be a valid number!");
       }
@@ -152,6 +153,7 @@ const Home = () => {
           accountType: role,
           age: age,
           state: state,
+          bookingLink: bookingLink,
         }),
       }).then((data) =>
         data.json().then((data) => {
@@ -341,6 +343,18 @@ const Home = () => {
                   <option value="WI">Wisconsin</option>
                   <option value="WY">Wyoming</option>
                 </select>
+                <label>
+                  Enter your booking link from
+                  <a href="https://www.setmore.com/" target="_blank">
+                    Setmore
+                  </a>
+                </label>
+                <FormInput
+                  type="url"
+                  name="bookingLink"
+                  placeholder="Setmore link"
+                  required
+                />
               </FormField>
             )}
             <Button type="submit">Submit</Button>
