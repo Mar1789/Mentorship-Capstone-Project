@@ -446,6 +446,9 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
   let users = await prisma.User.findMany({
     where: {
       accountType: "Mentor",
+      NOT: {
+        id: parseInt(userId),
+      },
     },
   });
   if (age.charAt(2) === "-") {
@@ -468,6 +471,27 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
   }
   // Get student coordinates
   const studentCoords = await getCoords(userId);
+  await initializeData(userId, keyword, studentCoords, matches, priorityMatch);
+  await normalize(map1, priorityMatch);
+  // Order the map by least to greatest average scores
+  users = await reverseMap(map1);
+  // Fetch the user with the highest average score (always index 0)
+  const user = await prisma.user.findFirst({
+    where: {
+      id: users[0],
+    },
+  });
+  res.json([user]);
+});
+
+async function initializeData(
+  userId,
+  keyword,
+  studentCoords,
+  matches,
+  priorityMatch
+) {
+  const convertMiles = 0.000621371192;
   await Promise.all(
     matches.map(async (user) => {
       let distance;
@@ -486,7 +510,7 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
           }
         );
         // Convert the distance from meters to miles
-        distance *= 0.000621371192;
+        distance *= convertMiles;
       } else {
         distance = 10000;
       }
@@ -498,6 +522,9 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
       });
     })
   );
+}
+
+async function normalize(map1, priorityMatch) {
   const distanceMin = Math.min(...priorityMatch.map((item) => item.distance)); // Get the minimum and maximum distance out of all of the mentors
   const distanceMax = Math.max(...priorityMatch.map((item) => item.distance));
   const likeMin = Math.min(...priorityMatch.map((item) => item.like)); // Get the minimum and maximum likecount
@@ -521,14 +548,7 @@ app.get("/match/:userId/:age/:keyword", async (req, res) => {
   });
   // Order the map by least to greatest average scores
   users = await reverseMap(map1);
-  // Fetch the user with the highest average score (always index 0)
-  const user = await prisma.user.findFirst({
-    where: {
-      id: users[0],
-    },
-  });
-  res.json([user]);
-});
+}
 
 async function reverseMap(map1) {
   map1 = new Map([...map1.entries()].sort());
