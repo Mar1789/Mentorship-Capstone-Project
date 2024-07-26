@@ -186,6 +186,10 @@ const Meetup = () => {
               location
                 .json()
                 .then((location) => {
+                  if(location.message && location.message === "No path could be found for input"){
+                    setIsLoading(false);
+                    return alert("No path can be found for the input. Please meet through zoom.")
+                  }
                   //Coordinates store every waypoint that a car would be in the route throughout the trip
                   let coordinates =
                     location.features[0].geometry.coordinates[0];
