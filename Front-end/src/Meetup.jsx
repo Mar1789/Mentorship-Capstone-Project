@@ -332,7 +332,7 @@ const Meetup = () => {
   }
 
   const customIcon = new L.icon({
-    iconUrl: "../public/location.png",
+    iconUrl: "../dist/location.png",
     iconSize: [38, 38],
   });
 
