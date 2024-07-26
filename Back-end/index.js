@@ -297,10 +297,14 @@ app.put("/user", async (req, res) => {
   });
   res.json(updateUser);
 });
-app.get("/mentors", async (req, res) => {
+app.get("/mentors/:userId", async (req, res) => {
+  const userId = parseInt(req.params.userId);
   const mentors = await prisma.User.findMany({
     where: {
       accountType: "Mentor",
+      NOT: {
+        id: userId,
+      },
     },
   });
   res.json(mentors);
