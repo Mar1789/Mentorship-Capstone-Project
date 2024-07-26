@@ -330,7 +330,7 @@ const Meetup = () => {
 
   function getMentors() {
     setIsLoading(true);
-    fetch(`https://mentorship-capstone-project.onrender.com/mentors`, {
+    fetch(`https://mentorship-capstone-project.onrender.com/mentors/${info.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "Application/json",
@@ -356,12 +356,12 @@ const Meetup = () => {
   }, []);
   useEffect(() => {
     if (user) {
-      getMentors();
       getInfo();
     }
   }, [user]);
   useEffect(() => {
     if (info) {
+      getMentors();
       const location = navigator.geolocation.getCurrentPosition(
         postCoordinates,
         err
