@@ -23,3 +23,7 @@ https://github.com/user-attachments/assets/994f7ae5-90b5-4a68-b00a-8a02c5f0b8a1
 Article feature implementation
 
 ![article](https://github.com/user-attachments/assets/5715df65-2541-43c1-b3d4-ab14c1cb846d)
+
+Final Week Demo
+https://github.com/user-attachments/assets/679eb65a-be88-4e0f-9123-ac32f1143e0f
+
