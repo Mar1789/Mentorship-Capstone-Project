@@ -231,7 +231,7 @@ const Home = () => {
         Join Today!
       </p>
       <div className="alumni">
-        <h2>Where our Alumni are working after PioneerTech</h2>
+        <h2>Where our Alumni are working after PioneerPath</h2>
         <img className="companylogo navbar-animation" src={Companies} />
       </div>
 
