@@ -93,7 +93,7 @@ const Member = () => {
     );
   }
   async function filterPosts(e) {
-    // setIsLoading(true);
+    setIsLoading(true);
     await fetch(
       `https://mentorship-capstone-project.onrender.com/filterPosts/${e.target.innerText}/${info.id}`,
       {
