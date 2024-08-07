@@ -66,6 +66,7 @@ const ResetPassword = () => {
           setVerify(true);
           setAccountId(data);
           e.target.reset();
+          setUserError("")
         }
         setIsLoading(false);
       })
@@ -90,6 +91,7 @@ const ResetPassword = () => {
           setIsLoading(false);
           window.location.href = "/";
           e.target.reset();
+          setUserError("")
         })
       );
     } else {
