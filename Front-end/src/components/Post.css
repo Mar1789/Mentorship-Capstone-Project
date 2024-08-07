@@ -1,6 +1,6 @@
 .post-border {
   position: relative;
-  height: 400px;
+  height: 301px;
   display: flex;
   flex-direction: row;
   width: 800px;
@@ -24,7 +24,6 @@
 }
 
 .hover:hover {
-  /* border: 3px solid red; */
   animation: jump 0.5s forwards 2 alternate;
 }
 @keyframes slidein {
@@ -33,19 +32,16 @@
   }
 
   100% {
-    /* transform: translateY(0); */
     scale: 100%;
   }
 }
 @keyframes jump {
   0% {
     transform: translate3d(0, 0, 0);
-    /* transform: translateY(-200); */
   }
 
   100% {
     transform: translate3d(0, -10px, 0);
-    /* transform: translateY(0); */
   }
 }
 .profile {
@@ -74,7 +70,6 @@
 .title {
   margin-left: 13px;
   text-align: left;
-  /* margin-top: 0px; */
   margin-right: auto;
   width: 547px;
   word-wrap: break-word;
