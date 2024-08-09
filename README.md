@@ -25,5 +25,6 @@ Article feature implementation
 ![article](https://github.com/user-attachments/assets/5715df65-2541-43c1-b3d4-ab14c1cb846d)
 
 Final Week Demo
-https://github.com/user-attachments/assets/679eb65a-be88-4e0f-9123-ac32f1143e0f
+
+https://github.com/user-attachments/assets/efe28c1b-222e-4436-8b9d-be4fafcb52df
 
