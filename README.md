@@ -14,7 +14,7 @@
 - Add the API keys required for the project in a .env file
 - Run npm start
 
-Final Week Demo
+ # Final Week Demo
 
 https://github.com/user-attachments/assets/efe28c1b-222e-4436-8b9d-be4fafcb52df
 
